@@ -1,0 +1,26 @@
+{
+  "name": "bs-result",
+  "version": "1.0.0",
+  "description": "A Result type implementation for ReasonML",
+  "scripts": {
+    "build": "bsb -make-world",
+    "clean": "bsb -clean-world",
+    "coverage": "nyc report --temp-directory=coverage --reporter=text-lcov | coveralls",
+    "install:peers": "yarn add $(jq -r '.peerDependencies|keys|join(\" \")' package.json)",
+    "start": "bsb -make-world -w",
+    "test": "yarn run clean; yarn run build; jest --coverage && yarn run coverage",
+    "watch:jest": "jest --coverage --watchAll"
+  },
+  "main": "Result.bs.js",
+  "repository": "git@github.com:scull7/bs-result.git",
+  "author": "Nathan Sculli <scull7@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "@glennsl/bs-jest": "^0.4.2",
+    "coveralls": "^3.0.0",
+    "nyc": "^11.6.0"
+  },
+  "peerDependencies": {
+    "bs-platform": "^3.0.0"
+  }
+}

@@ -1,0 +1,20 @@
+{
+    "name": "bs-result",
+    "version": "1.0.0",
+    "package-specs": {
+        "module": "commonjs",
+        "in-source": true
+    },
+    "suffix": ".bs.js",
+    "sources": [
+        "src",
+        {
+            "dir": "__tests__",
+            "type": "dev"
+        }
+    ],
+    "bs-dev-dependencies": [ "@glennsl/bs-jest" ],
+    "bs-dependencies": [],
+    "bsc-flags": [ "-bs-super-errors", "-bs-sort-imports" ],
+    "refmt": 3
+}
