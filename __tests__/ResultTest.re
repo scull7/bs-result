@@ -4,10 +4,9 @@ exception UnsafeGetFailure(string);
 
 describe("Basic Result Utilities", () => {
   test("of_", () =>
-    switch (Result.of_(1)) {
-    | Error(_) => fail("unexpected_error_type")
-    | Ok(x) => Expect.expect(x) |> Expect.toBe(1)
-    }
+    let actual = Result.of_(1);
+    let expected = Result.Ok(1);
+    Expect.expect(actual) |> Expect.toEqual(expected);
   );
   test("pure", () => {
     let actual = Result.pure(1);
