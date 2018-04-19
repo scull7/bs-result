@@ -3,13 +3,13 @@
   "version": "1.0.0",
   "description": "A Result type implementation for ReasonML",
   "scripts": {
-    "build": "bsb -make-world",
     "clean": "bsb -clean-world",
     "coverage": "nyc report --temp-directory=coverage --reporter=text-lcov | coveralls",
+    "format": "bsrefmt --in-place src/*.re* __tests__/*.re*",
     "install:peers": "yarn add $(jq -r '.peerDependencies|keys|join(\" \")' package.json)",
-    "start": "bsb -make-world -w",
     "test": "yarn run clean; yarn run build; jest --coverage && yarn run coverage",
-    "watch:jest": "jest --coverage --watchAll"
+    "watch:jest": "jest --coverage --watchAll",
+    "watch:build": "npm run format && bsb -make-world -w"
   },
   "main": "Result.bs.js",
   "repository": "git@github.com:scull7/bs-result.git",

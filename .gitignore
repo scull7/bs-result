@@ -7,6 +7,7 @@
 *.cmx
 *.cmxs
 *.cmxa
+*.log
 
 # ocamlbuild working directory
 _build/
@@ -22,8 +23,11 @@ setup.log
 # bucklescript ignores
 lib/*
 !lib/js
+node_modules/
 .merlin
 .bsb.lock
-node_modules/
 *.bs.js
 coverage
+
+# VSCode generated files
+.vscode/
