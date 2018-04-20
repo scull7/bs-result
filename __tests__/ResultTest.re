@@ -3,11 +3,11 @@ open Jest;
 exception UnsafeGetFailure(string);
 
 describe("Basic Result Utilities", () => {
-  test("of_", () =>
+  test("of_", () => {
     let actual = Result.of_(1);
     let expected = Result.Ok(1);
     Expect.expect(actual) |> Expect.toEqual(expected);
-  );
+  });
   test("pure", () => {
     let actual = Result.pure(1);
     let expected = Result.Ok(1);
