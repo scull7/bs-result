@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "A Result type implementation for ReasonML",
   "scripts": {
+    "build": "bsb -make-world",
     "clean": "bsb -clean-world",
     "coverage": "nyc report --temp-directory=coverage --reporter=text-lcov | coveralls",
     "format": "bsrefmt --in-place src/*.re* __tests__/*.re*",
@@ -18,7 +19,7 @@
   "devDependencies": {
     "@glennsl/bs-jest": "^0.4.2",
     "coveralls": "^3.0.0",
-    "nyc": "^11.6.0"
+    "nyc": "^11.7.1"
   },
   "peerDependencies": {
     "bs-platform": "^3.0.0"
