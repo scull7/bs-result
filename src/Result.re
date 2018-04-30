@@ -30,6 +30,9 @@ let map = (fn, result) =>
   | Ok(good) => good |> fn |> pure
   };
 
+let map2 = (fn, fst, snd) =>
+  fst |> map(x => snd |> map(y => fn(x, y)));
+
 let fold = (error, ok, result) =>
   switch (result) {
   | Error(bad) => error(bad)

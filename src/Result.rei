@@ -16,6 +16,8 @@ let ap: ('a, result('b, 'a => 'c)) => result('b, 'c);
 
 let map: ('a => 'b, result('c, 'a)) => result('c, 'b);
 
+let map2: ( ('a, 'b) => 'c, result('d, 'a), result('e, 'b)) => result('d, result('e, 'c));
+
 let fold: ('a => 'b, 'c => 'b, result('a, 'c)) => 'b;
 
 let bimap: ('a => 'b, 'c => 'd, result('a, 'c)) => result('b, 'd);
