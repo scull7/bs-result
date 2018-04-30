@@ -45,20 +45,14 @@ describe("Basic Result Utilities", () => {
     Expect.expect(actual) |> Expect.toEqual(expected);
   });
   test("map2 - Ok", () => {
-    let actual = Result.map2(
-      (x, y) => x + y,
-      Result.pure(1),
-      Result.pure(2)
-    );
+    let actual =
+      Result.map2((x, y) => x + y, Result.pure(1), Result.pure(2));
     let expected = Result.pure(3) |> Result.pure;
     Expect.expect(actual) |> Expect.toEqual(expected);
   });
   test("map2 - Error", () => {
-    let actual = Result.map2(
-      (x, y) => x + y,
-      Result.error(1),
-      Result.error(2)
-    );
+    let actual =
+      Result.map2((x, y) => x + y, Result.error(1), Result.error(2));
     let expected = Result.error(1);
     Expect.expect(actual) |> Expect.toEqual(expected);
   });
