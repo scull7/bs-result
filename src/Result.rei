@@ -17,8 +17,7 @@ let ap: ('a, result('b, 'a => 'c)) => result('b, 'c);
 let map: ('a => 'b, result('c, 'a)) => result('c, 'b);
 
 let map2:
-  (('a, 'b) => 'c, result('d, 'a), result('e, 'b)) =>
-  result('d, result('e, 'c));
+  (('a, 'b) => 'c, result('d, 'a), result('d, 'b)) => result('d, 'c);
 
 let fold: ('a => 'b, 'c => 'b, result('a, 'c)) => 'b;
 
@@ -59,7 +58,12 @@ module Promise: {
   let bimap:
     ('a => 'b, 'c => 'd, Js.Promise.t(result('a, 'c))) =>
     Js.Promise.t(result('b, 'd));
+  let andThen:
+    ('a => Js.Promise.t(result('b, 'c)), Js.Promise.t(result('b, 'a))) =>
+    Js.Promise.t(result('b, 'c));
   let chain:
     ('a => result('b, 'c), Js.Promise.t(result('b, 'a))) =>
     Js.Promise.t(result('b, 'c));
+  
+  let unsafeResolve: Js.Promise.t(result(exn, 'a)) => Js.Promise.t('a)
 };

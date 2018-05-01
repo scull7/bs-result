@@ -30,8 +30,6 @@ let map = (fn, result) =>
   | Ok(good) => good |> fn |> pure
   };
 
-let map2 = (fn, fst, snd) => fst |> map(x => snd |> map(y => fn(x, y)));
-
 let fold = (error, ok, result) =>
   switch (result) {
   | Error(bad) => error(bad)
@@ -61,6 +59,8 @@ let chain = (fn, result) =>
   };
 
 let flatMap = chain;
+
+let map2 = (fn, fst, snd) => fst |> flatMap(x => snd |> map(y => fn(x, y)));
 
 let forAll = (fn, result) =>
   switch (result) {
@@ -105,7 +105,18 @@ module Promise = {
     |> Js.Promise.then_(result =>
          bimap(fnError, fnOk, result) |> Js.Promise.resolve
        );
+  let andThen = (fn, promise) =>
+    promise
+    |> Js.Promise.then_(
+      fun
+      | Error(e)=> Error(e) |> Js.Promise.resolve
+      | Ok(v) => fn(v)
+    );
   let chain = (fn, promise) =>
     promise
     |> Js.Promise.then_(result => chain(fn, result) |> Js.Promise.resolve);
+
+  let unsafeResolve = promise =>
+    promise
+    |> Js.Promise.then_(result => result |> unsafeGet |> Js.Promise.resolve);
 };

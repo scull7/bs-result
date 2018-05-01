@@ -47,7 +47,7 @@ describe("Basic Result Utilities", () => {
   test("map2 - Ok", () => {
     let actual =
       Result.map2((x, y) => x + y, Result.pure(1), Result.pure(2));
-    let expected = Result.pure(3) |> Result.pure;
+    let expected = Result.pure(3);
     Expect.expect(actual) |> Expect.toEqual(expected);
   });
   test("map2 - Error", () => {
@@ -279,6 +279,25 @@ describe("Result.Promise based utilities", () => {
          |> Js.Promise.resolve
        )
   );
+
+  testPromise("andThen - Ok", () =>
+    Result.Promise.pure(42)
+    |> Result.Promise.andThen(x => Result.Promise.pure(x + 1))
+    |> Js.Promise.then_(actual =>
+      Expect.expect(actual)
+      |> Expect.toEqual(Result.pure(43))
+      |> Js.Promise.resolve
+    )
+  );
+  testPromise("andThen - Error", () =>
+    Result.Promise.error(42)
+    |> Result.Promise.andThen(x => Result.Promise.error(x + 1))
+    |> Js.Promise.then_(actual =>
+      Expect.expect(actual)
+      |> Expect.toEqual(Result.error(42))
+      |> Js.Promise.resolve
+    )
+  );
   testPromise("chain - Ok", () =>
     Result.Promise.pure(42)
     |> Result.Promise.chain(x => Result.pure(x + 1))
@@ -287,5 +306,17 @@ describe("Result.Promise based utilities", () => {
          |> Expect.toEqual(Result.pure(43))
          |> Js.Promise.resolve
        )
+  );
+  testPromise("unsafeResolve - Ok", () =>
+    Result.Promise.pure(42)
+    |> Js.Promise.then_(result =>
+      Result.Promise.pure(result)
+      |> Result.Promise.unsafeResolve
+    )
+    |> Js.Promise.then_(actual =>
+      Expect.expect(actual)
+      |> Expect.toEqual(Result.pure(42))
+      |> Js.Promise.resolve
+    )
   );
 });
