@@ -47,6 +47,12 @@ let toOption =
   | Error(_) => None
   | Ok(good) => Some(good);
 
+let fromOption = (errFn, option) =>
+  switch (option) {
+  | None => errFn() |> error
+  | Some(v) => v |> pure
+  };
+
 let swap =
   fun
   | Error(bad) => pure(bad)
@@ -58,7 +64,12 @@ let chain = (fn, result) =>
   | Ok(good) => fn(good)
   };
 
+let chain2 = (fn, fst, snd) =>
+  fst |> chain(x => snd |> chain(y => fn(x, y)));
+
 let flatMap = chain;
+
+let map2 = (fn, fst, snd) => fst |> flatMap(x => snd |> map(y => fn(x, y)));
 
 let forAll = (fn, result) =>
   switch (result) {
@@ -93,6 +104,9 @@ module Promise = {
   let of_ = x => pure(x) |> Js.Promise.resolve;
   let pure = of_;
   let error = x => error(x) |> Js.Promise.resolve;
+  let isOk = x => isOk(x) |> Js.Promise.resolve;
+  let isError = x => isError(x) |> Js.Promise.resolve;
+  let ap = (x, result) => ap(x, result) |> Js.Promise.resolve;
   let map = (fn, promise) =>
     promise
     |> Js.Promise.then_(result => map(fn, result) |> Js.Promise.resolve);
@@ -103,7 +117,21 @@ module Promise = {
     |> Js.Promise.then_(result =>
          bimap(fnError, fnOk, result) |> Js.Promise.resolve
        );
+  let andThen = (fn, promise) =>
+    promise
+    |> Js.Promise.then_(
+         fun
+         | Error(e) => Error(e) |> Js.Promise.resolve
+         | Ok(v) => fn(v),
+       );
   let chain = (fn, promise) =>
     promise
     |> Js.Promise.then_(result => chain(fn, result) |> Js.Promise.resolve);
+  let unsafeResolve = promise =>
+    promise
+    |> Js.Promise.then_(result => result |> unsafeGet |> Js.Promise.resolve);
+  let unsafeMapResolve = (fn, promise) =>
+    promise |> map(fn) |> unsafeResolve;
+  let unsafeChainResolve = (fn, promise) =>
+    promise |> chain(fn) |> unsafeResolve;
 };
