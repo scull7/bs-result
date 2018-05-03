@@ -105,7 +105,7 @@ describe("Basic Result Utilities", () => {
   test("fromOption - Error", () => {
     let fromOptionWithError = Result.fromOption(() => ());
     let actual = fromOptionWithError(None);
-    let expected = Result.error(());
+    let expected = Result.error();
     Expect.expect(actual) |> Expect.toEqual(expected);
   });
   test("swap - Ok", () => {
@@ -129,11 +129,12 @@ describe("Basic Result Utilities", () => {
     Expect.expect(actual) |> Expect.toEqual(expected);
   });
   test("chain2 - Ok", () => {
-    let actual = Result.chain2(
-      (x, y) => Result.pure(x + y),
-      Result.pure(2),
-      Result.pure(40)
-    );
+    let actual =
+      Result.chain2(
+        (x, y) => Result.pure(x + y),
+        Result.pure(2),
+        Result.pure(40),
+      );
     let expected = Result.pure(42);
     Expect.expect(actual) |> Expect.toEqual(expected);
   });
@@ -242,63 +243,63 @@ describe("Result.Promise based utilities", () => {
          |> Js.Promise.resolve
        )
   );
-  testPromise("isOk - true", () => {
+  testPromise("isOk - true", () =>
     Result.pure(1)
     |> Result.Promise.isOk
     |> Js.Promise.then_(actual => {
-      let expected = true;
-      Expect.expect(actual)
-      |> Expect.toEqual(expected)
-      |> Js.Promise.resolve
-    })
-  });
-  testPromise("isOk - false", () => {
+         let expected = true;
+         Expect.expect(actual)
+         |> Expect.toEqual(expected)
+         |> Js.Promise.resolve;
+       })
+  );
+  testPromise("isOk - false", () =>
     Result.error("error")
     |> Result.Promise.isOk
     |> Js.Promise.then_(actual => {
-      let expected = false;
-      Expect.expect(actual)
-      |> Expect.toEqual(expected)
-      |> Js.Promise.resolve
-    })
-  });
-  testPromise("isError - true", () => {
+         let expected = false;
+         Expect.expect(actual)
+         |> Expect.toEqual(expected)
+         |> Js.Promise.resolve;
+       })
+  );
+  testPromise("isError - true", () =>
     Result.error("error")
     |> Result.Promise.isError
     |> Js.Promise.then_(actual => {
-      let expected = true;
-      Expect.expect(actual)
-      |> Expect.toEqual(expected)
-      |> Js.Promise.resolve
-    })
-  });
-  testPromise("isError - false", () => {
+         let expected = true;
+         Expect.expect(actual)
+         |> Expect.toEqual(expected)
+         |> Js.Promise.resolve;
+       })
+  );
+  testPromise("isError - false", () =>
     Result.pure(1)
     |> Result.Promise.isError
     |> Js.Promise.then_(actual => {
-      let expected = false;
-      Expect.expect(actual)
-      |> Expect.toEqual(expected)
-      |> Js.Promise.resolve
-    })
-  });
+         let expected = false;
+         Expect.expect(actual)
+         |> Expect.toEqual(expected)
+         |> Js.Promise.resolve;
+       })
+  );
   testPromise("ap - Ok", () =>
     Result.Promise.ap(40, Result.pure(x => x + 2))
     |> Js.Promise.then_(actual => {
-      let expected = Result.pure(42);
-      Expect.expect(actual)
-      |> Expect.toEqual(expected)
-      |> Js.Promise.resolve;
-    })
+         let expected = Result.pure(42);
+         Expect.expect(actual)
+         |> Expect.toEqual(expected)
+         |> Js.Promise.resolve;
+       })
   );
   testPromise("ap - Error", () =>
     Result.Promise.ap(40, Result.error("error"))
     |> Js.Promise.then_(actual => {
-      let expected = Result.error("error");
-      Expect.expect(actual)
-      |> Expect.toEqual(expected)
-      |> Js.Promise.resolve;
-    })
+         let expected = Result.error("error");
+         Expect.expect(actual)
+         |> Expect.toEqual(expected)
+         |> Js.Promise.resolve;
+       })
   );
   testPromise("map - Ok", () =>
     Result.Promise.pure(42)
@@ -358,24 +359,23 @@ describe("Result.Promise based utilities", () => {
          |> Js.Promise.resolve
        )
   );
-
   testPromise("andThen - Ok", () =>
     Result.Promise.pure(42)
     |> Result.Promise.andThen(x => Result.Promise.pure(x + 1))
     |> Js.Promise.then_(actual =>
-      Expect.expect(actual)
-      |> Expect.toEqual(Result.pure(43))
-      |> Js.Promise.resolve
-    )
+         Expect.expect(actual)
+         |> Expect.toEqual(Result.pure(43))
+         |> Js.Promise.resolve
+       )
   );
   testPromise("andThen - Error", () =>
     Result.Promise.error(42)
     |> Result.Promise.andThen(x => Result.Promise.error(x + 1))
     |> Js.Promise.then_(actual =>
-      Expect.expect(actual)
-      |> Expect.toEqual(Result.error(42))
-      |> Js.Promise.resolve
-    )
+         Expect.expect(actual)
+         |> Expect.toEqual(Result.error(42))
+         |> Js.Promise.resolve
+       )
   );
   testPromise("chain - Ok", () =>
     Result.Promise.pure(42)
@@ -389,35 +389,34 @@ describe("Result.Promise based utilities", () => {
   testPromise("unsafeResolve - Ok", () =>
     Result.Promise.pure(42)
     |> Js.Promise.then_(result =>
-      Result.Promise.pure(result)
-      |> Result.Promise.unsafeResolve
-    )
+         Result.Promise.pure(result) |> Result.Promise.unsafeResolve
+       )
     |> Js.Promise.then_(actual =>
-      Expect.expect(actual)
-      |> Expect.toEqual(Result.pure(42))
-      |> Js.Promise.resolve
-    )
+         Expect.expect(actual)
+         |> Expect.toEqual(Result.pure(42))
+         |> Js.Promise.resolve
+       )
   );
   testPromise("unsafeMapResolve - Ok", () => {
     let actual = 42;
     let expected = 43;
     Result.Promise.pure(actual)
     |> Result.Promise.unsafeMapResolve(x => x + 1)
-    |> Js.Promise.then_(result => {
-      Expect.expect(result)
-      |> Expect.toEqual(expected)
-      |> Js.Promise.resolve
-    })
+    |> Js.Promise.then_(result =>
+         Expect.expect(result)
+         |> Expect.toEqual(expected)
+         |> Js.Promise.resolve
+       );
   });
   testPromise("unsafeChainResolve - Ok", () => {
     let actual = 42;
     let expected = 43;
     Result.Promise.pure(actual)
     |> Result.Promise.unsafeChainResolve(x => Result.pure(x + 1))
-    |> Js.Promise.then_(result => {
-      Expect.expect(result)
-      |> Expect.toEqual(expected)
-      |> Js.Promise.resolve
-    })
+    |> Js.Promise.then_(result =>
+         Expect.expect(result)
+         |> Expect.toEqual(expected)
+         |> Js.Promise.resolve
+       );
   });
 });
