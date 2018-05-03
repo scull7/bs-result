@@ -25,9 +25,13 @@ let bimap: ('a => 'b, 'c => 'd, result('a, 'c)) => result('b, 'd);
 
 let toOption: result('a, 'b) => option('b);
 
+let fromOption: (unit => 'a, option('b)) => result('a, 'b);
+
 let swap: result('a, 'b) => result('b, 'a);
 
 let chain: ('a => result('b, 'c), result('b, 'a)) => result('b, 'c);
+
+let chain2: (('a, 'b) => result('c, 'd), result('c, 'a), result('c, 'b)) => result('c, 'd);
 
 let flatMap: ('a => result('b, 'c), result('b, 'a)) => result('b, 'c);
 
@@ -45,6 +49,9 @@ module Promise: {
   let of_: 'a => Js.Promise.t(result('b, 'a));
   let pure: 'a => Js.Promise.t(result('b, 'a));
   let error: 'a => Js.Promise.t(result('a, 'b));
+  let isOk: result('a, 'b) => Js.Promise.t(bool);
+  let isError: result('a, 'b) => Js.Promise.t(bool);
+  let ap: ('a, result('b, 'a => 'c)) => Js.Promise.t(result('b, 'c));
   let map:
     ('a => 'b, Js.Promise.t(result('c, 'a))) =>
     Js.Promise.t(result('c, 'b));
@@ -65,5 +72,11 @@ module Promise: {
     ('a => result('b, 'c), Js.Promise.t(result('b, 'a))) =>
     Js.Promise.t(result('b, 'c));
   
-  let unsafeResolve: Js.Promise.t(result(exn, 'a)) => Js.Promise.t('a)
+  let unsafeResolve: Js.Promise.t(result(exn, 'a)) => Js.Promise.t('a);
+
+  let unsafeMapResolve: ('a => 'b, Js.Promise.t(result(exn, 'a))) => Js.Promise.t('b);
+  
+  let unsafeChainResolve:
+    ('a => result(exn, 'b), Js.Promise.t(result(exn, 'a))) =>
+    Js.Promise.t('b);
 };

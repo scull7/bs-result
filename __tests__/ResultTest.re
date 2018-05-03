@@ -34,6 +34,16 @@ describe("Basic Result Utilities", () => {
     let expected = (false, true);
     Expect.expect(actual) |> Expect.toEqual(expected);
   });
+  test("ap - Ok", () => {
+    let actual = Result.ap(40, Result.pure(x => x + 2));
+    let expected = Result.pure(42);
+    Expect.expect(actual) |> Expect.toEqual(expected);
+  });
+  test("ap - Error", () => {
+    let actual = Result.ap(40, Result.error("boom"));
+    let expected = Result.error("boom");
+    Expect.expect(actual) |> Expect.toEqual(expected);
+  });
   test("map - Ok", () => {
     let actual = Result.map(x => x + 1, Result.pure(1));
     let expected = Result.pure(2);
@@ -54,16 +64,6 @@ describe("Basic Result Utilities", () => {
     let actual =
       Result.map2((x, y) => x + y, Result.error(1), Result.error(2));
     let expected = Result.error(1);
-    Expect.expect(actual) |> Expect.toEqual(expected);
-  });
-  test("ap - Ok", () => {
-    let actual = Result.ap(40, Result.pure(x => x + 2));
-    let expected = Result.pure(42);
-    Expect.expect(actual) |> Expect.toEqual(expected);
-  });
-  test("ap - Error", () => {
-    let actual = Result.ap(40, Result.error("boom"));
-    let expected = Result.error("boom");
     Expect.expect(actual) |> Expect.toEqual(expected);
   });
   test("fold - Ok", () => {
@@ -96,6 +96,18 @@ describe("Basic Result Utilities", () => {
     let expected = None;
     Expect.expect(actual) |> Expect.toEqual(expected);
   });
+  test("fromOption - Ok", () => {
+    let fromOptionWithError = Result.fromOption(() => ());
+    let actual = fromOptionWithError(Some(42));
+    let expected = Result.pure(42);
+    Expect.expect(actual) |> Expect.toEqual(expected);
+  });
+  test("fromOption - Error", () => {
+    let fromOptionWithError = Result.fromOption(() => ());
+    let actual = fromOptionWithError(None);
+    let expected = Result.error(());
+    Expect.expect(actual) |> Expect.toEqual(expected);
+  });
   test("swap - Ok", () => {
     let actual = Result.swap(Result.pure(1));
     let expected = Result.error(1);
@@ -114,6 +126,15 @@ describe("Basic Result Utilities", () => {
   test("chain - Error", () => {
     let actual = Result.error(1) |> Result.chain(x => Result.pure(x + 1));
     let expected = Result.error(1);
+    Expect.expect(actual) |> Expect.toEqual(expected);
+  });
+  test("chain2 - Ok", () => {
+    let actual = Result.chain2(
+      (x, y) => Result.pure(x + y),
+      Result.pure(2),
+      Result.pure(40)
+    );
+    let expected = Result.pure(42);
     Expect.expect(actual) |> Expect.toEqual(expected);
   });
   test("flatMap - Ok", () => {
@@ -221,6 +242,64 @@ describe("Result.Promise based utilities", () => {
          |> Js.Promise.resolve
        )
   );
+  testPromise("isOk - true", () => {
+    Result.pure(1)
+    |> Result.Promise.isOk
+    |> Js.Promise.then_(actual => {
+      let expected = true;
+      Expect.expect(actual)
+      |> Expect.toEqual(expected)
+      |> Js.Promise.resolve
+    })
+  });
+  testPromise("isOk - false", () => {
+    Result.error("error")
+    |> Result.Promise.isOk
+    |> Js.Promise.then_(actual => {
+      let expected = false;
+      Expect.expect(actual)
+      |> Expect.toEqual(expected)
+      |> Js.Promise.resolve
+    })
+  });
+  testPromise("isError - true", () => {
+    Result.error("error")
+    |> Result.Promise.isError
+    |> Js.Promise.then_(actual => {
+      let expected = true;
+      Expect.expect(actual)
+      |> Expect.toEqual(expected)
+      |> Js.Promise.resolve
+    })
+  });
+  testPromise("isError - false", () => {
+    Result.pure(1)
+    |> Result.Promise.isError
+    |> Js.Promise.then_(actual => {
+      let expected = false;
+      Expect.expect(actual)
+      |> Expect.toEqual(expected)
+      |> Js.Promise.resolve
+    })
+  });
+  testPromise("ap - Ok", () =>
+    Result.Promise.ap(40, Result.pure(x => x + 2))
+    |> Js.Promise.then_(actual => {
+      let expected = Result.pure(42);
+      Expect.expect(actual)
+      |> Expect.toEqual(expected)
+      |> Js.Promise.resolve;
+    })
+  );
+  testPromise("ap - Error", () =>
+    Result.Promise.ap(40, Result.error("error"))
+    |> Js.Promise.then_(actual => {
+      let expected = Result.error("error");
+      Expect.expect(actual)
+      |> Expect.toEqual(expected)
+      |> Js.Promise.resolve;
+    })
+  );
   testPromise("map - Ok", () =>
     Result.Promise.pure(42)
     |> Result.Promise.map(x => x + 1)
@@ -319,4 +398,26 @@ describe("Result.Promise based utilities", () => {
       |> Js.Promise.resolve
     )
   );
+  testPromise("unsafeMapResolve - Ok", () => {
+    let actual = 42;
+    let expected = 43;
+    Result.Promise.pure(actual)
+    |> Result.Promise.unsafeMapResolve(x => x + 1)
+    |> Js.Promise.then_(result => {
+      Expect.expect(result)
+      |> Expect.toEqual(expected)
+      |> Js.Promise.resolve
+    })
+  });
+  testPromise("unsafeChainResolve - Ok", () => {
+    let actual = 42;
+    let expected = 43;
+    Result.Promise.pure(actual)
+    |> Result.Promise.unsafeChainResolve(x => Result.pure(x + 1))
+    |> Js.Promise.then_(result => {
+      Expect.expect(result)
+      |> Expect.toEqual(expected)
+      |> Js.Promise.resolve
+    })
+  });
 });
