@@ -31,6 +31,6 @@
     "nyc": "^11.7.1"
   },
   "peerDependencies": {
-    "bs-platform": "^3.0.0"
+    "bs-platform": "^3.1.4"
   }
 }
