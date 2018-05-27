@@ -3,24 +3,24 @@ open Jest;
 exception UnsafeGetFailure(string);
 
 describe("Basic Result Utilities", () => {
-  test("of_", () => {
-    let actual = Result.of_(1);
-    let expected = Result.Ok(1);
+  test("return", () => {
+    let actual = Result.return(1);
+    let expected = Belt.Result.Ok(1);
     Expect.expect(actual) |> Expect.toEqual(expected);
   });
-  test("pure", () => {
-    let actual = Result.pure(1);
-    let expected = Result.Ok(1);
+  test("return", () => {
+    let actual = Result.return(1);
+    let expected = Belt.Result.Ok(1);
     Expect.expect(actual) |> Expect.toEqual(expected);
   });
   test("error", () => {
     let actual = Result.error("boom");
-    let expected = Result.Error("boom");
+    let expected = Belt.Result.Error("boom");
     Expect.expect(actual) |> Expect.toEqual(expected);
   });
   test("isOk", () => {
     let actual = (
-      Result.isOk(Result.pure(1)),
+      Result.isOk(Result.return(1)),
       Result.isOk(Result.error("boom")),
     );
     let expected = (true, false);
@@ -28,15 +28,15 @@ describe("Basic Result Utilities", () => {
   });
   test("isError", () => {
     let actual = (
-      Result.isError(Result.pure(1)),
+      Result.isError(Result.return(1)),
       Result.isError(Result.error("boom")),
     );
     let expected = (false, true);
     Expect.expect(actual) |> Expect.toEqual(expected);
   });
   test("ap - Ok", () => {
-    let actual = Result.ap(40, Result.pure(x => x + 2));
-    let expected = Result.pure(42);
+    let actual = Result.ap(40, Result.return(x => x + 2));
+    let expected = Result.return(42);
     Expect.expect(actual) |> Expect.toEqual(expected);
   });
   test("ap - Error", () => {
@@ -45,8 +45,8 @@ describe("Basic Result Utilities", () => {
     Expect.expect(actual) |> Expect.toEqual(expected);
   });
   test("map - Ok", () => {
-    let actual = Result.map(x => x + 1, Result.pure(1));
-    let expected = Result.pure(2);
+    let actual = Result.map(x => x + 1, Result.return(1));
+    let expected = Result.return(2);
     Expect.expect(actual) |> Expect.toEqual(expected);
   });
   test("map - Error", () => {
@@ -56,8 +56,8 @@ describe("Basic Result Utilities", () => {
   });
   test("map2 - Ok", () => {
     let actual =
-      Result.map2((x, y) => x + y, Result.pure(1), Result.pure(2));
-    let expected = Result.pure(3);
+      Result.map2((x, y) => x + y, Result.return(1), Result.return(2));
+    let expected = Result.return(3);
     Expect.expect(actual) |> Expect.toEqual(expected);
   });
   test("map2 - Error", () => {
@@ -66,28 +66,50 @@ describe("Basic Result Utilities", () => {
     let expected = Result.error(1);
     Expect.expect(actual) |> Expect.toEqual(expected);
   });
+  test("map3 - Ok", () => {
+    let actual =
+      Result.map3(
+        (x, y, z) => x + y + z,
+        Result.return(1),
+        Result.return(2),
+        Result.return(3),
+      );
+    let expected = Result.return(6);
+    Expect.expect(actual) |> Expect.toEqual(expected);
+  });
+  test("map3 - Error", () => {
+    let actual =
+      Result.map3(
+        (x, y, z) => x + y + z,
+        Result.error(1),
+        Result.error(2),
+        Result.error(3),
+      );
+    let expected = Result.error(1);
+    Expect.expect(actual) |> Expect.toEqual(expected);
+  });
   test("fold - Ok", () => {
-    let actual = Result.fold(x => x + 2, x => x + 1, Result.pure(1));
-    let expected = 2;
+    let actual = Result.fold(x => x + 2, x => x + 1, Result.return(1));
+    let expected = 3;
     Expect.expect(actual) |> Expect.toEqual(expected);
   });
   test("fold - Error", () => {
     let actual = Result.fold(x => x + 2, x => x + 1, Result.error(1));
-    let expected = 3;
+    let expected = 2;
     Expect.expect(actual) |> Expect.toEqual(expected);
   });
   test("bimap - Ok", () => {
-    let actual = Result.bimap(x => x + 2, x => x + 1, Result.pure(1));
-    let expected = Result.pure(2);
+    let actual = Result.bimap(x => x + 2, x => x + 1, Result.return(1));
+    let expected = Result.return(3);
     Expect.expect(actual) |> Expect.toEqual(expected);
   });
   test("bimap - Error", () => {
     let actual = Result.bimap(x => x + 2, x => x + 1, Result.error(1));
-    let expected = Result.error(3);
+    let expected = Result.error(2);
     Expect.expect(actual) |> Expect.toEqual(expected);
   });
   test("toOption - Ok", () => {
-    let actual = Result.toOption(Result.pure(1));
+    let actual = Result.toOption(Result.return(1));
     let expected = Some(1);
     Expect.expect(actual) |> Expect.toEqual(expected);
   });
@@ -99,7 +121,7 @@ describe("Basic Result Utilities", () => {
   test("fromOption - Ok", () => {
     let fromOptionWithError = Result.fromOption(() => ());
     let actual = fromOptionWithError(Some(42));
-    let expected = Result.pure(42);
+    let expected = Result.return(42);
     Expect.expect(actual) |> Expect.toEqual(expected);
   });
   test("fromOption - Error", () => {
@@ -109,52 +131,78 @@ describe("Basic Result Utilities", () => {
     Expect.expect(actual) |> Expect.toEqual(expected);
   });
   test("swap - Ok", () => {
-    let actual = Result.swap(Result.pure(1));
+    let actual = Result.swap(Result.return(1));
     let expected = Result.error(1);
     Expect.expect(actual) |> Expect.toEqual(expected);
   });
   test("swap - Error", () => {
     let actual = Result.swap(Result.error(1));
-    let expected = Result.pure(1);
-    Expect.expect(actual) |> Expect.toEqual(expected);
-  });
-  test("chain - Ok", () => {
-    let actual = Result.pure(1) |> Result.chain(x => Result.pure(x + 1));
-    let expected = Result.pure(2);
-    Expect.expect(actual) |> Expect.toEqual(expected);
-  });
-  test("chain - Error", () => {
-    let actual = Result.error(1) |> Result.chain(x => Result.pure(x + 1));
-    let expected = Result.error(1);
-    Expect.expect(actual) |> Expect.toEqual(expected);
-  });
-  test("chain2 - Ok", () => {
-    let actual =
-      Result.chain2(
-        (x, y) => Result.pure(x + y),
-        Result.pure(2),
-        Result.pure(40),
-      );
-    let expected = Result.pure(42);
+    let expected = Result.return(1);
     Expect.expect(actual) |> Expect.toEqual(expected);
   });
   test("flatMap - Ok", () => {
-    let actual = Result.pure(1) |> Result.flatMap(x => Result.pure(x + 1));
-    let expected = Result.pure(2);
+    let actual =
+      Result.return(1) |> Result.flatMap(x => Result.return(x + 1));
+    let expected = Result.return(2);
     Expect.expect(actual) |> Expect.toEqual(expected);
   });
   test("flatMap - Error", () => {
-    let actual = Result.error(1) |> Result.flatMap(x => Result.pure(x + 1));
+    let actual =
+      Result.error(1) |> Result.flatMap(x => Result.return(x + 1));
     let expected = Result.error(1);
     Expect.expect(actual) |> Expect.toEqual(expected);
   });
+  test("flatMap2 - Ok", () => {
+    let actual =
+      Result.flatMap2(
+        (x, y) => Result.return(x + y),
+        Result.return(2),
+        Result.return(40),
+      );
+    let expected = Result.return(42);
+    Expect.expect(actual) |> Expect.toEqual(expected);
+  });
+  test("flatMap - Ok", () => {
+    let actual =
+      Result.return(1) |> Result.flatMap(x => Result.return(x + 1));
+    let expected = Result.return(2);
+    Expect.expect(actual) |> Expect.toEqual(expected);
+  });
+  test("flatMap - Error", () => {
+    let actual =
+      Result.error(1) |> Result.flatMap(x => Result.return(x + 1));
+    let expected = Result.error(1);
+    Expect.expect(actual) |> Expect.toEqual(expected);
+  });
+  test("flatMap3 - Ok", () => {
+    let actual =
+      Result.flatMap3(
+        (x, y, z) => Result.return(x + y + z),
+        Result.return(2),
+        Result.return(18),
+        Result.return(22),
+      );
+    let expected = Result.return(42);
+    Expect.expect(actual) |> Expect.toEqual(expected);
+  });
+  test("flatMap3 - Error", () => {
+    let actual =
+      Result.flatMap3(
+        (x, y, z) => Result.return(x + y + z),
+        Result.return(2),
+        Result.error(18),
+        Result.return(22),
+      );
+    let expected = Result.error(18);
+    Expect.expect(actual) |> Expect.toEqual(expected);
+  });
   test("forAll - Ok (true)", () => {
-    let actual = Result.pure(1) |> Result.forAll(x => x == 1);
+    let actual = Result.return(1) |> Result.forAll(x => x == 1);
     let expected = true;
     Expect.expect(actual) |> Expect.toEqual(expected);
   });
   test("forAll - Ok (false)", () => {
-    let actual = Result.pure(1) |> Result.forAll(x => x == 2);
+    let actual = Result.return(1) |> Result.forAll(x => x == 2);
     let expected = false;
     Expect.expect(actual) |> Expect.toEqual(expected);
   });
@@ -170,7 +218,7 @@ describe("Basic Result Utilities", () => {
   });
   test("forEach - Ok", () => {
     let actual = ref(1);
-    Result.pure(1) |> Result.forEach(x => actual := x + actual^);
+    Result.return(1) |> Result.forEach(x => actual := x + actual^);
     let expected = 2;
     Expect.expect(actual^) |> Expect.toEqual(expected);
   });
@@ -181,7 +229,7 @@ describe("Basic Result Utilities", () => {
     Expect.expect(actual^) |> Expect.toEqual(expected);
   });
   test("getOrElse - Ok", () => {
-    let actual = Result.getOrElse("foo", Result.pure("bar"));
+    let actual = Result.getOrElse("foo", Result.return("bar"));
     let expected = "bar";
     Expect.expect(actual) |> Expect.toEqual(expected);
   });
@@ -191,7 +239,7 @@ describe("Basic Result Utilities", () => {
     Expect.expect(actual) |> Expect.toEqual(expected);
   });
   test("getOrElseThunk - Ok", () => {
-    let actual = Result.getOrElseThunk(_ => "foo", Result.pure("bar"));
+    let actual = Result.getOrElseThunk(_ => "foo", Result.return("bar"));
     let expected = "bar";
     Expect.expect(actual) |> Expect.toEqual(expected);
   });
@@ -202,7 +250,7 @@ describe("Basic Result Utilities", () => {
   });
   test("unsafeGet - Ok", () => {
     let actual =
-      try (Result.pure(42) |> Result.unsafeGet) {
+      try (Result.return(42) |> Result.unsafeGet) {
       | UnsafeGetFailure(_) => 0
       };
     let expected = 42;
@@ -219,19 +267,19 @@ describe("Basic Result Utilities", () => {
 });
 
 describe("Result.Promise based utilities", () => {
-  testPromise("of_", () =>
-    Result.Promise.of_(42)
+  testPromise("return", () =>
+    Result.Promise.return(42)
     |> Js.Promise.then_(actual =>
          Expect.expect(actual)
-         |> Expect.toEqual(Result.pure(42))
+         |> Expect.toEqual(Result.return(42))
          |> Js.Promise.resolve
        )
   );
-  testPromise("pure", () =>
-    Result.Promise.pure(42)
+  testPromise("return", () =>
+    Result.Promise.return(42)
     |> Js.Promise.then_(actual =>
          Expect.expect(actual)
-         |> Expect.toEqual(Result.pure(42))
+         |> Expect.toEqual(Result.return(42))
          |> Js.Promise.resolve
        )
   );
@@ -244,7 +292,7 @@ describe("Result.Promise based utilities", () => {
        )
   );
   testPromise("isOk - true", () =>
-    Result.pure(1)
+    Result.Promise.return(1)
     |> Result.Promise.isOk
     |> Js.Promise.then_(actual => {
          let expected = true;
@@ -254,7 +302,7 @@ describe("Result.Promise based utilities", () => {
        })
   );
   testPromise("isOk - false", () =>
-    Result.error("error")
+    Result.Promise.error("error")
     |> Result.Promise.isOk
     |> Js.Promise.then_(actual => {
          let expected = false;
@@ -264,7 +312,7 @@ describe("Result.Promise based utilities", () => {
        })
   );
   testPromise("isError - true", () =>
-    Result.error("error")
+    Result.Promise.error("error")
     |> Result.Promise.isError
     |> Js.Promise.then_(actual => {
          let expected = true;
@@ -274,7 +322,7 @@ describe("Result.Promise based utilities", () => {
        })
   );
   testPromise("isError - false", () =>
-    Result.pure(1)
+    Result.Promise.return(1)
     |> Result.Promise.isError
     |> Js.Promise.then_(actual => {
          let expected = false;
@@ -284,9 +332,9 @@ describe("Result.Promise based utilities", () => {
        })
   );
   testPromise("ap - Ok", () =>
-    Result.Promise.ap(40, Result.pure(x => x + 2))
+    Result.Promise.ap(40, Result.return(x => x + 2))
     |> Js.Promise.then_(actual => {
-         let expected = Result.pure(42);
+         let expected = Result.return(42);
          Expect.expect(actual)
          |> Expect.toEqual(expected)
          |> Js.Promise.resolve;
@@ -302,11 +350,11 @@ describe("Result.Promise based utilities", () => {
        })
   );
   testPromise("map - Ok", () =>
-    Result.Promise.pure(42)
+    Result.Promise.return(42)
     |> Result.Promise.map(x => x + 1)
     |> Js.Promise.then_(actual =>
          Expect.expect(actual)
-         |> Expect.toEqual(Result.pure(43))
+         |> Expect.toEqual(Result.return(43))
          |> Js.Promise.resolve
        )
   );
@@ -320,10 +368,10 @@ describe("Result.Promise based utilities", () => {
        )
   );
   testPromise("fold - Ok", () =>
-    Result.Promise.pure(42)
+    Result.Promise.return(42)
     |> Result.Promise.fold(
-         x => Js.String.toUpperCase(x) |> Js.Promise.resolve,
          x => string_of_int(x) |> Js.Promise.resolve,
+         x => Js.String.toUpperCase(x) |> Js.Promise.resolve,
        )
     |> Js.Promise.then_(actual =>
          Expect.expect(actual) |> Expect.toEqual("42") |> Js.Promise.resolve
@@ -332,8 +380,8 @@ describe("Result.Promise based utilities", () => {
   testPromise("fold - Error", () =>
     Result.Promise.error("boom")
     |> Result.Promise.fold(
-         x => Js.String.toUpperCase(x) |> Js.Promise.resolve,
          x => string_of_int(x) |> Js.Promise.resolve,
+         x => Js.String.toUpperCase(x) |> Js.Promise.resolve,
        )
     |> Js.Promise.then_(actual =>
          Expect.expect(actual)
@@ -342,17 +390,17 @@ describe("Result.Promise based utilities", () => {
        )
   );
   testPromise("bimap - Ok", () =>
-    Result.Promise.pure(42)
-    |> Result.Promise.bimap(x => Js.String.toUpperCase(x), x => x + 1)
+    Result.Promise.return(42)
+    |> Result.Promise.bimap(x => x + 1, x => Js.String.toUpperCase(x))
     |> Js.Promise.then_(actual =>
          Expect.expect(actual)
-         |> Expect.toEqual(Result.pure(43))
+         |> Expect.toEqual(Result.return(43))
          |> Js.Promise.resolve
        )
   );
   testPromise("bimap - Error", () =>
     Result.Promise.error("boom")
-    |> Result.Promise.bimap(x => Js.String.toUpperCase(x), x => x + 1)
+    |> Result.Promise.bimap(x => x + 1, x => Js.String.toUpperCase(x))
     |> Js.Promise.then_(actual =>
          Expect.expect(actual)
          |> Expect.toEqual(Result.error("BOOM"))
@@ -360,11 +408,11 @@ describe("Result.Promise based utilities", () => {
        )
   );
   testPromise("andThen - Ok", () =>
-    Result.Promise.pure(42)
-    |> Result.Promise.andThen(x => Result.Promise.pure(x + 1))
+    Result.Promise.return(42)
+    |> Result.Promise.andThen(x => Result.Promise.return(x + 1))
     |> Js.Promise.then_(actual =>
          Expect.expect(actual)
-         |> Expect.toEqual(Result.pure(43))
+         |> Expect.toEqual(Result.return(43))
          |> Js.Promise.resolve
        )
   );
@@ -377,30 +425,30 @@ describe("Result.Promise based utilities", () => {
          |> Js.Promise.resolve
        )
   );
-  testPromise("chain - Ok", () =>
-    Result.Promise.pure(42)
-    |> Result.Promise.chain(x => Result.pure(x + 1))
+  testPromise("flatMap - Ok", () =>
+    Result.Promise.return(42)
+    |> Result.Promise.flatMap(x => Result.return(x + 1))
     |> Js.Promise.then_(actual =>
          Expect.expect(actual)
-         |> Expect.toEqual(Result.pure(43))
+         |> Expect.toEqual(Result.return(43))
          |> Js.Promise.resolve
        )
   );
   testPromise("unsafeResolve - Ok", () =>
-    Result.Promise.pure(42)
+    Result.Promise.return(42)
     |> Js.Promise.then_(result =>
-         Result.Promise.pure(result) |> Result.Promise.unsafeResolve
+         Result.Promise.return(result) |> Result.Promise.unsafeResolve
        )
     |> Js.Promise.then_(actual =>
          Expect.expect(actual)
-         |> Expect.toEqual(Result.pure(42))
+         |> Expect.toEqual(Result.return(42))
          |> Js.Promise.resolve
        )
   );
   testPromise("unsafeMapResolve - Ok", () => {
     let actual = 42;
     let expected = 43;
-    Result.Promise.pure(actual)
+    Result.Promise.return(actual)
     |> Result.Promise.unsafeMapResolve(x => x + 1)
     |> Js.Promise.then_(result =>
          Expect.expect(result)
@@ -408,11 +456,11 @@ describe("Result.Promise based utilities", () => {
          |> Js.Promise.resolve
        );
   });
-  testPromise("unsafeChainResolve - Ok", () => {
+  testPromise("unsafeFlatMapResolve - Ok", () => {
     let actual = 42;
     let expected = 43;
-    Result.Promise.pure(actual)
-    |> Result.Promise.unsafeChainResolve(x => Result.pure(x + 1))
+    Result.Promise.return(actual)
+    |> Result.Promise.unsafeFlatMapResolve(x => Result.return(x + 1))
     |> Js.Promise.then_(result =>
          Expect.expect(result)
          |> Expect.toEqual(expected)

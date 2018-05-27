@@ -1,10 +1,6 @@
-type result('bad, 'good) =
-  | Error('bad)
-  | Ok('good);
+open Belt.Result;
 
-let of_ = x => Ok(x);
-
-let pure = of_;
+let return = x => Ok(x);
 
 let error = x => Error(x);
 
@@ -21,25 +17,25 @@ let isError =
 let ap = (x, result) =>
   switch (result) {
   | Error(bad) => Error(bad)
-  | Ok(fn) => fn(x) |> pure
+  | Ok(fn) => fn(x) |> return
   };
 
 let map = (fn, result) =>
   switch (result) {
   | Error(bad) => Error(bad)
-  | Ok(good) => good |> fn |> pure
+  | Ok(good) => good |> fn |> return
   };
 
-let fold = (error, ok, result) =>
+let fold = (ok, error, result) =>
   switch (result) {
   | Error(bad) => error(bad)
   | Ok(good) => ok(good)
   };
 
-let bimap = (fnError, fnOk, result) =>
+let bimap = (fnOk, fnError, result) =>
   switch (result) {
   | Error(bad) => bad |> fnError |> error
-  | Ok(good) => good |> fnOk |> pure
+  | Ok(good) => good |> fnOk |> return
   };
 
 let toOption =
@@ -50,26 +46,30 @@ let toOption =
 let fromOption = (errFn, option) =>
   switch (option) {
   | None => errFn() |> error
-  | Some(v) => v |> pure
+  | Some(v) => v |> return
   };
 
 let swap =
   fun
-  | Error(bad) => pure(bad)
-  | Ok(good) => error(good);
+  | Ok(good) => error(good)
+  | Error(bad) => return(bad);
 
-let chain = (fn, result) =>
+let flatMap = (fn, result) =>
   switch (result) {
-  | Error(bad) => Error(bad)
   | Ok(good) => fn(good)
+  | Error(bad) => Error(bad)
   };
 
-let chain2 = (fn, fst, snd) =>
-  fst |> chain(x => snd |> chain(y => fn(x, y)));
+let flatMap2 = (fn, fst, snd) =>
+  fst |> flatMap(x => snd |> flatMap(y => fn(x, y)));
 
-let flatMap = chain;
+let flatMap3 = (fn, a, b, c) =>
+  a |> flatMap(x => b |> flatMap(y => c |> flatMap(z => fn(x, y, z))));
 
 let map2 = (fn, fst, snd) => fst |> flatMap(x => snd |> map(y => fn(x, y)));
+
+let map3 = (fn, a, b, c) =>
+  a |> flatMap(x => b |> flatMap(y => c |> map(z => fn(x, y, z))));
 
 let forAll = (fn, result) =>
   switch (result) {
@@ -101,11 +101,12 @@ let unsafeGet =
   | Ok(good) => good;
 
 module Promise = {
-  let of_ = x => pure(x) |> Js.Promise.resolve;
-  let pure = of_;
+  let return = x => return(x) |> Js.Promise.resolve;
   let error = x => error(x) |> Js.Promise.resolve;
-  let isOk = x => isOk(x) |> Js.Promise.resolve;
-  let isError = x => isError(x) |> Js.Promise.resolve;
+  let isOk = promise =>
+    promise |> Js.Promise.then_(x => isOk(x) |> Js.Promise.resolve);
+  let isError = promise =>
+    promise |> Js.Promise.then_(x => isError(x) |> Js.Promise.resolve);
   let ap = (x, result) => ap(x, result) |> Js.Promise.resolve;
   let map = (fn, promise) =>
     promise
@@ -124,14 +125,14 @@ module Promise = {
          | Error(e) => Error(e) |> Js.Promise.resolve
          | Ok(v) => fn(v),
        );
-  let chain = (fn, promise) =>
+  let flatMap = (fn, promise) =>
     promise
-    |> Js.Promise.then_(result => chain(fn, result) |> Js.Promise.resolve);
+    |> Js.Promise.then_(result => flatMap(fn, result) |> Js.Promise.resolve);
   let unsafeResolve = promise =>
     promise
     |> Js.Promise.then_(result => result |> unsafeGet |> Js.Promise.resolve);
   let unsafeMapResolve = (fn, promise) =>
     promise |> map(fn) |> unsafeResolve;
-  let unsafeChainResolve = (fn, promise) =>
-    promise |> chain(fn) |> unsafeResolve;
+  let unsafeFlatMapResolve = (fn, promise) =>
+    promise |> flatMap(fn) |> unsafeResolve;
 };

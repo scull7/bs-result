@@ -1,82 +1,104 @@
-type result('bad, 'good) =
-  | Error('bad)
-  | Ok('good);
+let return: 'a => Belt.Result.t('a, 'b);
 
-let of_: 'a => result('b, 'a);
+let error: 'b => Belt.Result.t('a, 'b);
 
-let pure: 'a => result('b, 'a);
+let isOk: Belt.Result.t('a, 'b) => bool;
 
-let error: 'a => result('a, 'b);
+let isError: Belt.Result.t('a, 'b) => bool;
 
-let isOk: result('a, 'b) => bool;
+let ap: ('a, Belt.Result.t('a => 'c, 'b)) => Belt.Result.t('c, 'b);
 
-let isError: result('a, 'b) => bool;
-
-let ap: ('a, result('b, 'a => 'c)) => result('b, 'c);
-
-let map: ('a => 'b, result('c, 'a)) => result('c, 'b);
+let map: ('a => 'b, Belt.Result.t('a, 'c)) => Belt.Result.t('b, 'c);
 
 let map2:
-  (('a, 'b) => 'c, result('d, 'a), result('d, 'b)) => result('d, 'c);
+  (('a, 'b) => 'c, Belt.Result.t('a, 'd), Belt.Result.t('b, 'd)) =>
+  Belt.Result.t('c, 'd);
 
-let fold: ('a => 'b, 'c => 'b, result('a, 'c)) => 'b;
+let map3:
+  (
+    ('a, 'b, 'c) => 'd,
+    Belt.Result.t('a, 'e),
+    Belt.Result.t('b, 'e),
+    Belt.Result.t('c, 'e)
+  ) =>
+  Belt.Result.t('d, 'e);
 
-let bimap: ('a => 'b, 'c => 'd, result('a, 'c)) => result('b, 'd);
+let fold: ('a => 'c, 'b => 'c, Belt.Result.t('a, 'b)) => 'c;
 
-let toOption: result('a, 'b) => option('b);
+let bimap:
+  ('a => 'c, 'b => 'd, Belt.Result.t('a, 'b)) => Belt.Result.t('c, 'd);
 
-let fromOption: (unit => 'a, option('b)) => result('a, 'b);
+let toOption: Belt.Result.t('a, 'b) => option('a);
 
-let swap: result('a, 'b) => result('b, 'a);
+let fromOption: (unit => 'b, option('a)) => Belt.Result.t('a, 'b);
 
-let chain: ('a => result('b, 'c), result('b, 'a)) => result('b, 'c);
+let swap: Belt.Result.t('a, 'b) => Belt.Result.t('b, 'a);
 
-let chain2:
-  (('a, 'b) => result('c, 'd), result('c, 'a), result('c, 'b)) =>
-  result('c, 'd);
+let flatMap:
+  ('a => Belt.Result.t('b, 'c), Belt.Result.t('a, 'c)) =>
+  Belt.Result.t('b, 'c);
 
-let flatMap: ('a => result('b, 'c), result('b, 'a)) => result('b, 'c);
+let flatMap2:
+  (
+    ('a, 'b) => Belt.Result.t('c, 'd),
+    Belt.Result.t('a, 'd),
+    Belt.Result.t('b, 'd)
+  ) =>
+  Belt.Result.t('c, 'd);
 
-let forAll: ('a => bool, result('b, 'a)) => bool;
+let flatMap3:
+  (
+    ('a, 'b, 'c) => Belt.Result.t('d, 'e),
+    Belt.Result.t('a, 'e),
+    Belt.Result.t('b, 'e),
+    Belt.Result.t('c, 'e)
+  ) =>
+  Belt.Result.t('d, 'e);
 
-let forEach: ('a => unit, result('b, 'a)) => unit;
+let forAll: ('a => bool, Belt.Result.t('a, 'b)) => bool;
 
-let getOrElse: ('a, result('b, 'a)) => 'a;
+let forEach: ('a => unit, Belt.Result.t('a, 'b)) => unit;
 
-let getOrElseThunk: ('a => 'b, result('a, 'b)) => 'b;
+let getOrElse: ('a, Belt.Result.t('a, 'b)) => 'a;
 
-let unsafeGet: result(exn, 'a) => 'a;
+let getOrElseThunk: ('b => 'a, Belt.Result.t('a, 'b)) => 'a;
+
+let unsafeGet: Belt.Result.t('a, exn) => 'a;
 
 module Promise: {
-  let of_: 'a => Js.Promise.t(result('b, 'a));
-  let pure: 'a => Js.Promise.t(result('b, 'a));
-  let error: 'a => Js.Promise.t(result('a, 'b));
-  let isOk: result('a, 'b) => Js.Promise.t(bool);
-  let isError: result('a, 'b) => Js.Promise.t(bool);
-  let ap: ('a, result('b, 'a => 'c)) => Js.Promise.t(result('b, 'c));
+  let return: 'a => Js.Promise.t(Belt.Result.t('a, 'b));
+  let error: 'a => Js.Promise.t(Belt.Result.t('b, 'a));
+  let isOk: Js.Promise.t(Belt.Result.t('a, 'b)) => Js.Promise.t(bool);
+  let isError: Js.Promise.t(Belt.Result.t('a, 'b)) => Js.Promise.t(bool);
+  let ap:
+    ('a, Belt.Result.t('a => 'c, 'b)) => Js.Promise.t(Belt.Result.t('c, 'b));
   let map:
-    ('a => 'b, Js.Promise.t(result('c, 'a))) =>
-    Js.Promise.t(result('c, 'b));
+    ('a => 'b, Js.Promise.t(Belt.Result.t('a, 'c))) =>
+    Js.Promise.t(Belt.Result.t('b, 'c));
   let fold:
     (
-      'a => Js.Promise.t('b),
-      'c => Js.Promise.t('b),
-      Js.Promise.t(result('a, 'c))
+      'a => Js.Promise.t('c),
+      'b => Js.Promise.t('c),
+      Js.Promise.t(Belt.Result.t('a, 'b))
     ) =>
-    Js.Promise.t('b);
+    Js.Promise.t('c);
   let bimap:
-    ('a => 'b, 'c => 'd, Js.Promise.t(result('a, 'c))) =>
-    Js.Promise.t(result('b, 'd));
+    ('a => 'c, 'b => 'd, Js.Promise.t(Belt.Result.t('a, 'b))) =>
+    Js.Promise.t(Belt.Result.t('c, 'd));
   let andThen:
-    ('a => Js.Promise.t(result('b, 'c)), Js.Promise.t(result('b, 'a))) =>
-    Js.Promise.t(result('b, 'c));
-  let chain:
-    ('a => result('b, 'c), Js.Promise.t(result('b, 'a))) =>
-    Js.Promise.t(result('b, 'c));
-  let unsafeResolve: Js.Promise.t(result(exn, 'a)) => Js.Promise.t('a);
+    (
+      'a => Js.Promise.t(Belt.Result.t('b, 'c)),
+      Js.Promise.t(Belt.Result.t('a, 'c))
+    ) =>
+    Js.Promise.t(Belt.Result.t('b, 'c));
+  let flatMap:
+    ('a => Belt.Result.t('b, 'c), Js.Promise.t(Belt.Result.t('a, 'c))) =>
+    Js.Promise.t(Belt.Result.t('b, 'c));
+  let unsafeResolve:
+    Js.Promise.t(Belt.Result.t('a, exn)) => Js.Promise.t('a);
   let unsafeMapResolve:
-    ('a => 'b, Js.Promise.t(result(exn, 'a))) => Js.Promise.t('b);
-  let unsafeChainResolve:
-    ('a => result(exn, 'b), Js.Promise.t(result(exn, 'a))) =>
+    ('a => 'b, Js.Promise.t(Belt.Result.t('a, exn))) => Js.Promise.t('b);
+  let unsafeFlatMapResolve:
+    ('a => Belt.Result.t('b, exn), Js.Promise.t(Belt.Result.t('a, exn))) =>
     Js.Promise.t('b);
 };
