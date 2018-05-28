@@ -3,6 +3,9 @@
 # bs-result
 A Result type implementation for ReasonML
 
+# API Docs
+https://scull7.github.io/bs-result/api/Result.html
+
 
 [funfix-core]: https://funfix.org/api/core/classes/either.html
 [sanctuaryjs-either]: https://sanctuary.js.org/#either-type
