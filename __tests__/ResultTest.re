@@ -35,14 +35,42 @@ describe("Basic Result Utilities", () => {
     Expect.expect(actual) |> Expect.toEqual(expected);
   });
   test("ap - Ok", () => {
-    let actual = Result.ap(40, Result.return(x => x + 2));
+    let value = Result.return(40);
+    let actual = Result.ap(value, Result.return(x => x + 2));
     let expected = Result.return(42);
     Expect.expect(actual) |> Expect.toEqual(expected);
   });
   test("ap - Error", () => {
-    let actual = Result.ap(40, Result.error("boom"));
+    let value = Result.return(40);
+    let actual = Result.ap(value, Result.error("boom"));
     let expected = Result.error("boom");
     Expect.expect(actual) |> Expect.toEqual(expected);
+  });
+  test("ap - Value Error", () => {
+    let value = Result.error("boom!");
+    let actual = Result.ap(value, Result.return(x => x + 2));
+    let expected = Result.error("boom!");
+    Expect.expect(actual) |> Expect.toEqual(expected);
+  });
+  test("ap - Identity", () => {
+    let value = Result.return(40);
+    let actual = Result.ap(value, Result.return(x => x));
+    let expected = Result.return(40);
+    Expect.expect(actual) |> Expect.toEqual(expected);
+  });
+  test("ap - Homomorphism", () => {
+    let fn = Result.return(x => x + 1);
+    let value = Result.return(40);
+    let a = Result.ap(value, fn);
+    let b = Result.return(41);
+    Expect.expect(b) |> Expect.toEqual(a);
+  });
+  test("ap - Interchange", () => {
+    let u = x => x + 1;
+    let y = 1;
+    let a = Result.ap(Result.return(y), Result.return(u));
+    let b = Result.ap(Result.return(u), Result.return(f => f(y)));
+    Expect.expect(b) |> Expect.toEqual(a);
   });
   test("map - Ok", () => {
     let actual = Result.map(x => x + 1, Result.return(1));
@@ -108,6 +136,40 @@ describe("Basic Result Utilities", () => {
     let expected = Result.error(2);
     Expect.expect(actual) |> Expect.toEqual(expected);
   });
+  test("bimap - Identity - Ok", () => {
+    let f = a => a;
+    let g = b => b;
+    let x = Result.return(42);
+    let y = Result.bimap(f, g, x);
+    Expect.expect(x) |> Expect.toEqual(y);
+  });
+  test("bimap - Identity - Error", () => {
+    let f = a => a;
+    let g = b => b;
+    let x = Result.error("boom!");
+    let y = Result.bimap(f, g, x);
+    Expect.expect(x) |> Expect.toEqual(y);
+  });
+  test("bimap - Composition - Ok", () => {
+    let f = x => x + 1;
+    let g = x => x + 2;
+    let h = x => x + 3;
+    let i = x => x + 4;
+    let a = 42;
+    let ok1 = Result.bimap(a => f(g(a)), b => h(i(b)), Result.return(a));
+    let ok2 = Result.bimap(g, i, Result.bimap(f, h, Result.return(a)));
+    Expect.expect(ok1) |> Expect.toEqual(ok2);
+  });
+  test("bimap - Composition - Error", () => {
+    let f = x => x + 1;
+    let g = x => x + 2;
+    let h = x => x + 3;
+    let i = x => x + 4;
+    let b = 24;
+    let err1 = Result.bimap(a => f(g(a)), b => h(i(b)), Result.error(b));
+    let err2 = Result.bimap(g, i, Result.bimap(f, h, Result.error(b)));
+    Expect.expect(err1) |> Expect.toEqual(err2);
+  });
   test("toOption - Ok", () => {
     let actual = Result.toOption(Result.return(1));
     let expected = Some(1);
@@ -151,6 +213,17 @@ describe("Basic Result Utilities", () => {
       Result.error(1) |> Result.flatMap(x => Result.return(x + 1));
     let expected = Result.error(1);
     Expect.expect(actual) |> Expect.toEqual(expected);
+  });
+  test("flatMap - Left Identity - Ok", () => {
+    let f = x => Result.return(x + 1);
+    let a = 42;
+    let x = Result.flatMap(f, Result.return(a));
+    Expect.expect(f(a)) |> Expect.toEqual(x);
+  });
+  test("flatMap - Right Identity - Ok", () => {
+    let a = Result.return(42);
+    let x = Result.flatMap(Result.return, a);
+    Expect.expect(a) |> Expect.toEqual(x);
   });
   test("flatMap2 - Ok", () => {
     let actual =
@@ -331,24 +404,29 @@ describe("Result.Promise based utilities", () => {
          |> Js.Promise.resolve;
        })
   );
-  testPromise("ap - Ok", () =>
-    Result.Promise.ap(40, Result.return(x => x + 2))
+  testPromise("ap - Ok", () => {
+    let value = Js.Promise.resolve(Result.return(40));
+    let fn = Js.Promise.resolve(Result.return(x => x + 2));
+
+    Result.Promise.ap(value, fn)
     |> Js.Promise.then_(actual => {
          let expected = Result.return(42);
          Expect.expect(actual)
          |> Expect.toEqual(expected)
          |> Js.Promise.resolve;
-       })
-  );
-  testPromise("ap - Error", () =>
-    Result.Promise.ap(40, Result.error("error"))
+       });
+  });
+  testPromise("ap - Error", () => {
+    let value = Js.Promise.resolve(Result.return(40));
+    let error = Js.Promise.resolve(Result.error("error"));
+    Result.Promise.ap(value, error)
     |> Js.Promise.then_(actual => {
          let expected = Result.error("error");
          Expect.expect(actual)
          |> Expect.toEqual(expected)
          |> Js.Promise.resolve;
-       })
-  );
+       });
+  });
   testPromise("map - Ok", () =>
     Result.Promise.return(42)
     |> Result.Promise.map(x => x + 1)

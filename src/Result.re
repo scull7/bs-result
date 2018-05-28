@@ -14,12 +14,6 @@ let isError =
   | Error(_) => true
   | Ok(_) => false;
 
-let ap = (x, result) =>
-  switch (result) {
-  | Error(bad) => Error(bad)
-  | Ok(fn) => fn(x) |> return
-  };
-
 let map = (fn, result) =>
   switch (result) {
   | Error(bad) => Error(bad)
@@ -71,6 +65,12 @@ let map2 = (fn, fst, snd) => fst |> flatMap(x => snd |> map(y => fn(x, y)));
 let map3 = (fn, a, b, c) =>
   a |> flatMap(x => b |> flatMap(y => c |> map(z => fn(x, y, z))));
 
+let ap = (result, fResult) =>
+  switch (result) {
+  | Error(bad) => Error(bad)
+  | Ok(v) => map(f => f(v), fResult)
+  };
+
 let forAll = (fn, result) =>
   switch (result) {
   | Error(_) => true
@@ -107,7 +107,11 @@ module Promise = {
     promise |> Js.Promise.then_(x => isOk(x) |> Js.Promise.resolve);
   let isError = promise =>
     promise |> Js.Promise.then_(x => isError(x) |> Js.Promise.resolve);
-  let ap = (x, result) => ap(x, result) |> Js.Promise.resolve;
+  let ap = (pResult, pfResult) =>
+    Js.Promise.all2((pResult, pfResult))
+    |> Js.Promise.then_(((result, fResult)) =>
+         ap(result, fResult) |> Js.Promise.resolve
+       );
   let map = (fn, promise) =>
     promise
     |> Js.Promise.then_(result => map(fn, result) |> Js.Promise.resolve);
