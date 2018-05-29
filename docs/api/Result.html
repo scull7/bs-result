@@ -55,19 +55,20 @@
 <a href="#Other" class='level-2 header'>Other</a>
 <a href="#value-swap" class='level-3 value'>swap</a>
 <a href="#module-Promise" class='level-3 module'>Promise</a>
-<a href="#value-Promise.return" class='level-4 value'>return</a>
-<a href="#value-Promise.error" class='level-4 value'>error</a>
-<a href="#value-Promise.isOk" class='level-4 value'>isOk</a>
-<a href="#value-Promise.isError" class='level-4 value'>isError</a>
-<a href="#value-Promise.ap" class='level-4 value'>ap</a>
-<a href="#value-Promise.map" class='level-4 value'>map</a>
-<a href="#value-Promise.fold" class='level-4 value'>fold</a>
-<a href="#value-Promise.bimap" class='level-4 value'>bimap</a>
-<a href="#value-Promise.andThen" class='level-4 value'>andThen</a>
-<a href="#value-Promise.flatMap" class='level-4 value'>flatMap</a>
-<a href="#value-Promise.unsafeResolve" class='level-4 value'>unsafeResolve</a>
-<a href="#value-Promise.unsafeMapResolve" class='level-4 value'>unsafeMapResolve</a>
-<a href="#value-Promise.unsafeFlatMapResolve" class='level-4 value'>unsafeFlatMapResolve</a>
+<a href="#Result.Promise" class='level-5 header'>Result.Promise</a>
+<a href="#value-Promise.return" class='level-6 value'>return</a>
+<a href="#value-Promise.error" class='level-6 value'>error</a>
+<a href="#value-Promise.isOk" class='level-6 value'>isOk</a>
+<a href="#value-Promise.isError" class='level-6 value'>isError</a>
+<a href="#value-Promise.ap" class='level-6 value'>ap</a>
+<a href="#value-Promise.map" class='level-6 value'>map</a>
+<a href="#value-Promise.fold" class='level-6 value'>fold</a>
+<a href="#value-Promise.bimap" class='level-6 value'>bimap</a>
+<a href="#value-Promise.andThen" class='level-6 value'>andThen</a>
+<a href="#value-Promise.flatMap" class='level-6 value'>flatMap</a>
+<a href="#value-Promise.unsafeResolve" class='level-6 value'>unsafeResolve</a>
+<a href="#value-Promise.unsafeMapResolve" class='level-6 value'>unsafeMapResolve</a>
+<a href="#value-Promise.unsafeFlatMapResolve" class='level-6 value'>unsafeFlatMapResolve</a>
       </div>
       <div class='project-title'>Package modules</div><div class='project-listing'><a href="Result.html">Result</a></div>
     </div>
@@ -81,7 +82,7 @@
 <p>Here a basic example:</p>
 <div class='code-block' data-block-syntax="re">
   
-  <pre class='code' data-block-id='11' id='block-11'><code>let <span class='pattern-ident' data-type="int">r</span> =
+  <pre class='code' data-block-id='14' id='block-14'><code>let <span class='pattern-ident' data-type="int">r</span> =
   <span class='ident' data-type="int => Belt.Result.t(int, 'a)">Result.return</span>(<span class='int' data-type="int">10</span>)
   <span class='operator' data-type="(
   Belt.Result.t(int, 'a),
@@ -113,7 +114,7 @@
   
 </div><div class='code-block' data-block-syntax="ml">
   
-  <pre class='code' data-block-id='11-alt' id='block-11-alt'><code>[@@@ocaml.ppx.context { cookies = [] }]
+  <pre class='code' data-block-id='14-alt' id='block-14-alt'><code>[@@@ocaml.ppx.context { cookies = [] }]
 open Result
 let <span class='pattern-ident' data-type="int">r</span> =
   (((<span class='ident' data-type="int => Belt.Result.t(int, 'a)">Result.return</span> <span class='int' data-type="int">10</span>) <span class='operator' data-type="(
@@ -156,7 +157,7 @@ There are 2 laws which a Functor must meet.</p>
 <ol><li>Identity
 <div class='code-block' data-block-syntax="re">
   
-  <pre class='code' data-block-id='6' id='block-6'><code><span class='ident' data-type="(string, Belt.Result.t(int, 'a)) => unit">Js.log2</span>(<span class='string' data-type="string">&quot;Should be 42&quot;</span>, <span class='ident' data-type="(int => int, Belt.Result.t(int, 'a)) => Belt.Result.t(
+  <pre class='code' data-block-id='9' id='block-9'><code><span class='ident' data-type="(string, Belt.Result.t(int, 'a)) => unit">Js.log2</span>(<span class='string' data-type="string">&quot;Should be 42&quot;</span>, <span class='ident' data-type="(int => int, Belt.Result.t(int, 'a)) => Belt.Result.t(
   int,
   'a
 )">Result.map</span>(<span class='pattern-ident' data-type="int">x</span> =&gt; <span class='ident' data-type="int">x</span>, <span class='ident' data-type="int => Belt.Result.t(int, 'a)">Result.return</span>(<span class='int' data-type="int">42</span>)));</code></pre>
@@ -165,7 +166,7 @@ There are 2 laws which a Functor must meet.</p>
   
 </div><div class='code-block' data-block-syntax="ml">
   
-  <pre class='code' data-block-id='6-alt' id='block-6-alt'><code>[@@@ocaml.ppx.context { cookies = [] }]
+  <pre class='code' data-block-id='9-alt' id='block-9-alt'><code>[@@@ocaml.ppx.context { cookies = [] }]
 open Result
 let _ =
   <span class='ident' data-type="(string, Belt.Result.t(int, 'a)) => unit">Js.log2</span> ((&quot;Should be 42&quot;)[@reason.raw_literal &quot;Should be 42&quot;])
@@ -179,7 +180,7 @@ let _ =
 </div></li><li>Composition
 <div class='code-block' data-block-syntax="re">
   
-  <pre class='code' data-block-id='5' id='block-5'><code>let <span class='pattern-ident' data-type="int => int">f</span> = <span class='pattern-ident' data-type="int">x</span> =&gt; <span class='ident' data-type="int">x</span> <span class='operator' data-type="(int, int) => int">+</span> <span class='int' data-type="int">1</span>;
+  <pre class='code' data-block-id='8' id='block-8'><code>let <span class='pattern-ident' data-type="int => int">f</span> = <span class='pattern-ident' data-type="int">x</span> =&gt; <span class='ident' data-type="int">x</span> <span class='operator' data-type="(int, int) => int">+</span> <span class='int' data-type="int">1</span>;
 let <span class='pattern-ident' data-type="int => int">g</span> = <span class='pattern-ident' data-type="int">x</span> =&gt; <span class='ident' data-type="int">x</span> <span class='operator' data-type="(int, int) => int">+</span> <span class='int' data-type="int">2</span>;
 let <span class='pattern-ident' data-type="Belt.Result.t(int, 'a)">a</span> = <span class='ident' data-type="(int => int, Belt.Result.t(int, 'a)) => Belt.Result.t(
   int,
@@ -198,7 +199,7 @@ let <span class='pattern-ident' data-type="Belt.Result.t(int, 'a)">b</span> = <s
   
 </div><div class='code-block' data-block-syntax="ml">
   
-  <pre class='code' data-block-id='5-alt' id='block-5-alt'><code>[@@@ocaml.ppx.context { cookies = [] }]
+  <pre class='code' data-block-id='8-alt' id='block-8-alt'><code>[@@@ocaml.ppx.context { cookies = [] }]
 open Result
 let <span class='pattern-ident' data-type="int => int">f</span> <span class='pattern-ident' data-type="int">x</span> = <span class='ident' data-type="int">x</span> <span class='operator' data-type="(int, int) => int">+</span> <span class='int' data-type="int">1</span>
 let <span class='pattern-ident' data-type="int => int">g</span> <span class='pattern-ident' data-type="int">x</span> = <span class='ident' data-type="int">x</span> <span class='operator' data-type="(int, int) => int">+</span> <span class='int' data-type="int">2</span>
@@ -251,7 +252,7 @@ There are 2 laws which a Monad must meet.</p>
 <ol><li>Left identity
 <div class='code-block' data-block-syntax="re">
   
-  <pre class='code' data-block-id='10' id='block-10'><code>let <span class='pattern-ident' data-type="int => Belt.Result.t(int, 'a)">f</span> = <span class='pattern-ident' data-type="int">x</span> =&gt; <span class='ident' data-type="int => Belt.Result.t(int, 'a)">Result.return</span>(<span class='ident' data-type="int">x</span> <span class='operator' data-type="(int, int) => int">+</span> <span class='int' data-type="int">1</span>);
+  <pre class='code' data-block-id='13' id='block-13'><code>let <span class='pattern-ident' data-type="int => Belt.Result.t(int, 'a)">f</span> = <span class='pattern-ident' data-type="int">x</span> =&gt; <span class='ident' data-type="int => Belt.Result.t(int, 'a)">Result.return</span>(<span class='ident' data-type="int">x</span> <span class='operator' data-type="(int, int) => int">+</span> <span class='int' data-type="int">1</span>);
 let <span class='pattern-ident' data-type="int">a</span> = <span class='int' data-type="int">42</span>;
 let <span class='pattern-ident' data-type="Belt.Result.t(int, 'a)">x</span> = <span class='ident' data-type="(
   int => Belt.Result.t(int, 'a),
@@ -263,7 +264,7 @@ let <span class='pattern-ident' data-type="Belt.Result.t(int, 'a)">x</span> = <s
   
 </div><div class='code-block' data-block-syntax="ml">
   
-  <pre class='code' data-block-id='10-alt' id='block-10-alt'><code>[@@@ocaml.ppx.context { cookies = [] }]
+  <pre class='code' data-block-id='13-alt' id='block-13-alt'><code>[@@@ocaml.ppx.context { cookies = [] }]
 open Result
 let <span class='pattern-ident' data-type="int => Belt.Result.t(int, 'a)">f</span> <span class='pattern-ident' data-type="int">x</span> = <span class='ident' data-type="int => Belt.Result.t(int, 'a)">Result.return</span> (<span class='ident' data-type="int">x</span> <span class='operator' data-type="(int, int) => int">+</span> <span class='int' data-type="int">1</span>)
 let <span class='pattern-ident' data-type="int">a</span> = <span class='int' data-type="int">42</span>
@@ -280,7 +281,7 @@ let _ =
 </div></li><li>Right identity
 <div class='code-block' data-block-syntax="re">
   
-  <pre class='code' data-block-id='9' id='block-9'><code>let <span class='pattern-ident' data-type="Belt.Result.t(int, 'a)">a</span> = <span class='ident' data-type="int => Belt.Result.t(int, 'a)">Result.return</span>(<span class='int' data-type="int">42</span>);
+  <pre class='code' data-block-id='12' id='block-12'><code>let <span class='pattern-ident' data-type="Belt.Result.t(int, 'a)">a</span> = <span class='ident' data-type="int => Belt.Result.t(int, 'a)">Result.return</span>(<span class='int' data-type="int">42</span>);
 let <span class='pattern-ident' data-type="Belt.Result.t(int, 'a)">x</span> = <span class='ident' data-type="(
   int => Belt.Result.t(int, 'a),
   Belt.Result.t(int, 'a)
@@ -291,7 +292,7 @@ let <span class='pattern-ident' data-type="Belt.Result.t(int, 'a)">x</span> = <s
   
 </div><div class='code-block' data-block-syntax="ml">
   
-  <pre class='code' data-block-id='9-alt' id='block-9-alt'><code>[@@@ocaml.ppx.context { cookies = [] }]
+  <pre class='code' data-block-id='12-alt' id='block-12-alt'><code>[@@@ocaml.ppx.context { cookies = [] }]
 open Result
 let <span class='pattern-ident' data-type="Belt.Result.t(int, 'a)">a</span> = <span class='ident' data-type="int => Belt.Result.t(int, 'a)">Result.return</span> <span class='int' data-type="int">42</span>
 let <span class='pattern-ident' data-type="Belt.Result.t(int, 'a)">x</span> = <span class='ident' data-type="(
@@ -332,13 +333,13 @@ the contents of those results to a function with an arity of 3.</p>
 into the <code>Result</code> context.</p>
 <div class='code-block' data-block-syntax="re">
   
-  <pre class='code' data-block-id='0' id='block-0'><code>let <span class='pattern-ident' data-type="Belt.Result.t(int, 'a)">r</span> = <span class='ident' data-type="int => Belt.Result.t(int, 'a)">Result.return</span>(<span class='int' data-type="int">42</span>);</code></pre>
+  <pre class='code' data-block-id='3' id='block-3'><code>let <span class='pattern-ident' data-type="Belt.Result.t(int, 'a)">r</span> = <span class='ident' data-type="int => Belt.Result.t(int, 'a)">Result.return</span>(<span class='int' data-type="int">42</span>);</code></pre>
   
   
   
 </div><div class='code-block' data-block-syntax="ml">
   
-  <pre class='code' data-block-id='0-alt' id='block-0-alt'><code>[@@@ocaml.ppx.context { cookies = [] }]
+  <pre class='code' data-block-id='3-alt' id='block-3-alt'><code>[@@@ocaml.ppx.context { cookies = [] }]
 open Result
 let <span class='pattern-ident' data-type="Belt.Result.t(int, 'a)">r</span> = <span class='ident' data-type="int => Belt.Result.t(int, 'a)">Result.return</span> <span class='int' data-type="int">42</span></code></pre>
   
@@ -352,13 +353,13 @@ let <span class='pattern-ident' data-type="Belt.Result.t(int, 'a)">r</span> = <s
 context as an <code>Error</code>.</p>
 <div class='code-block' data-block-syntax="re">
   
-  <pre class='code' data-block-id='1' id='block-1'><code>let <span class='pattern-ident' data-type="Belt.Result.t('a, string)">e</span> = <span class='ident' data-type="string => Belt.Result.t('a, string)">Result.error</span>(<span class='string' data-type="string">&quot;bad things&quot;</span>);</code></pre>
+  <pre class='code' data-block-id='4' id='block-4'><code>let <span class='pattern-ident' data-type="Belt.Result.t('a, string)">e</span> = <span class='ident' data-type="string => Belt.Result.t('a, string)">Result.error</span>(<span class='string' data-type="string">&quot;bad things&quot;</span>);</code></pre>
   
   
   
 </div><div class='code-block' data-block-syntax="ml">
   
-  <pre class='code' data-block-id='1-alt' id='block-1-alt'><code>[@@@ocaml.ppx.context { cookies = [] }]
+  <pre class='code' data-block-id='4-alt' id='block-4-alt'><code>[@@@ocaml.ppx.context { cookies = [] }]
 open Result
 let <span class='pattern-ident' data-type="Belt.Result.t('a, string)">e</span> = <span class='ident' data-type="string => Belt.Result.t('a, string)">Result.error</span> ((&quot;bad things&quot;)[@reason.raw_literal &quot;bad things&quot;])</code></pre>
   
@@ -375,7 +376,7 @@ let <span class='pattern-ident' data-type="Belt.Result.t('a, string)">e</span> =
 <ol><li>Identity
 <div class='code-block' data-block-syntax="re">
   
-  <pre class='code' data-block-id='4' id='block-4'><code>let <span class='pattern-ident' data-type="Belt.Result.t(int => int, 'a)">f</span> = <span class='ident' data-type="int => int => Belt.Result.t(int => int, 'a)">Result.return</span>(<span class='pattern-ident' data-type="int">x</span> =&gt; <span class='ident' data-type="int">x</span>);
+  <pre class='code' data-block-id='7' id='block-7'><code>let <span class='pattern-ident' data-type="Belt.Result.t(int => int, 'a)">f</span> = <span class='ident' data-type="int => int => Belt.Result.t(int => int, 'a)">Result.return</span>(<span class='pattern-ident' data-type="int">x</span> =&gt; <span class='ident' data-type="int">x</span>);
 let <span class='pattern-ident' data-type="Belt.Result.t(int, 'a)">a</span> = <span class='ident' data-type="int => Belt.Result.t(int, 'a)">Result.return</span>(<span class='int' data-type="int">2</span>);
 let <span class='pattern-ident' data-type="Belt.Result.t(int, 'a)">b</span> = <span class='ident' data-type="(
   Belt.Result.t(int, 'a),
@@ -387,7 +388,7 @@ let <span class='pattern-ident' data-type="Belt.Result.t(int, 'a)">b</span> = <s
   
 </div><div class='code-block' data-block-syntax="ml">
   
-  <pre class='code' data-block-id='4-alt' id='block-4-alt'><code>[@@@ocaml.ppx.context { cookies = [] }]
+  <pre class='code' data-block-id='7-alt' id='block-7-alt'><code>[@@@ocaml.ppx.context { cookies = [] }]
 open Result
 let <span class='pattern-ident' data-type="Belt.Result.t(int => int, 'a)">f</span> = <span class='ident' data-type="int => int => Belt.Result.t(int => int, 'a)">Result.return</span> (fun <span class='pattern-ident' data-type="int">x</span>  -&gt; <span class='ident' data-type="int">x</span>)
 let <span class='pattern-ident' data-type="Belt.Result.t(int, 'a)">a</span> = <span class='ident' data-type="int => Belt.Result.t(int, 'a)">Result.return</span> <span class='int' data-type="int">2</span>
@@ -403,7 +404,7 @@ let _ =
 </div></li><li>Homomorphism
 <div class='code-block' data-block-syntax="re">
   
-  <pre class='code' data-block-id='3' id='block-3'><code>let <span class='pattern-ident' data-type="int => int">f</span> = <span class='pattern-ident' data-type="int">x</span> =&gt; <span class='ident' data-type="int">x</span> <span class='operator' data-type="(int, int) => int">+</span> <span class='int' data-type="int">1</span>;
+  <pre class='code' data-block-id='6' id='block-6'><code>let <span class='pattern-ident' data-type="int => int">f</span> = <span class='pattern-ident' data-type="int">x</span> =&gt; <span class='ident' data-type="int">x</span> <span class='operator' data-type="(int, int) => int">+</span> <span class='int' data-type="int">1</span>;
 let <span class='pattern-ident' data-type="int">x</span> = <span class='int' data-type="int">2</span>;
 let <span class='pattern-ident' data-type="Belt.Result.t(int, 'a)">a</span> = <span class='ident' data-type="(
   Belt.Result.t(int, 'a),
@@ -416,7 +417,7 @@ let <span class='pattern-ident' data-type="Belt.Result.t(int, 'a)">b</span> = <s
   
 </div><div class='code-block' data-block-syntax="ml">
   
-  <pre class='code' data-block-id='3-alt' id='block-3-alt'><code>[@@@ocaml.ppx.context { cookies = [] }]
+  <pre class='code' data-block-id='6-alt' id='block-6-alt'><code>[@@@ocaml.ppx.context { cookies = [] }]
 open Result
 let <span class='pattern-ident' data-type="int => int">f</span> <span class='pattern-ident' data-type="int">x</span> = <span class='ident' data-type="int">x</span> <span class='operator' data-type="(int, int) => int">+</span> <span class='int' data-type="int">1</span>
 let <span class='pattern-ident' data-type="int">x</span> = <span class='int' data-type="int">2</span>
@@ -433,7 +434,7 @@ let _ =
 </div></li><li>Interchange
 <div class='code-block' data-block-syntax="re">
   
-  <pre class='code' data-block-id='2' id='block-2'><code>let <span class='pattern-ident' data-type="int => int">u</span> = <span class='pattern-ident' data-type="int">x</span> =&gt; <span class='ident' data-type="int">x</span> <span class='operator' data-type="(int, int) => int">+</span> <span class='int' data-type="int">1</span>;
+  <pre class='code' data-block-id='5' id='block-5'><code>let <span class='pattern-ident' data-type="int => int">u</span> = <span class='pattern-ident' data-type="int">x</span> =&gt; <span class='ident' data-type="int">x</span> <span class='operator' data-type="(int, int) => int">+</span> <span class='int' data-type="int">1</span>;
 let <span class='pattern-ident' data-type="int">y</span> = <span class='int' data-type="int">1</span>;
 let <span class='pattern-ident' data-type="Belt.Result.t(int, 'a)">a</span> = <span class='ident' data-type="(
   Belt.Result.t(int, 'a),
@@ -449,7 +450,7 @@ let <span class='pattern-ident' data-type="Belt.Result.t(int, 'a)">b</span> = <s
   
 </div><div class='code-block' data-block-syntax="ml">
   
-  <pre class='code' data-block-id='2-alt' id='block-2-alt'><code>[@@@ocaml.ppx.context { cookies = [] }]
+  <pre class='code' data-block-id='5-alt' id='block-5-alt'><code>[@@@ocaml.ppx.context { cookies = [] }]
 open Result
 let <span class='pattern-ident' data-type="int => int">u</span> <span class='pattern-ident' data-type="int">x</span> = <span class='ident' data-type="int">x</span> <span class='operator' data-type="(int, int) => int">+</span> <span class='int' data-type="int">1</span>
 let <span class='pattern-ident' data-type="int">y</span> = <span class='int' data-type="int">1</span>
@@ -479,7 +480,7 @@ There are 2 laws which a Bifunctor must meet.</p>
 <ol><li>Identity
 <div class='code-block' data-block-syntax="re">
   
-  <pre class='code' data-block-id='8' id='block-8'><code>let <span class='pattern-ident' data-type="Belt.Result.t(int, 'a)">a</span> = <span class='ident' data-type="int => Belt.Result.t(int, 'a)">Result.return</span>(<span class='int' data-type="int">42</span>);
+  <pre class='code' data-block-id='11' id='block-11'><code>let <span class='pattern-ident' data-type="Belt.Result.t(int, 'a)">a</span> = <span class='ident' data-type="int => Belt.Result.t(int, 'a)">Result.return</span>(<span class='int' data-type="int">42</span>);
 let <span class='pattern-ident' data-type="Belt.Result.t('a, string)">b</span> = <span class='ident' data-type="string => Belt.Result.t('a, string)">Result.error</span>(<span class='string' data-type="string">&quot;boom!&quot;</span>);
 let <span class='pattern-ident' data-type="Belt.Result.t(int, 'a)">a1</span> = <span class='ident' data-type="(
   int => int,
@@ -500,7 +501,7 @@ let <span class='pattern-ident' data-type="Belt.Result.t('a, string)">b1</span> 
   
 </div><div class='code-block' data-block-syntax="ml">
   
-  <pre class='code' data-block-id='8-alt' id='block-8-alt'><code>[@@@ocaml.ppx.context { cookies = [] }]
+  <pre class='code' data-block-id='11-alt' id='block-11-alt'><code>[@@@ocaml.ppx.context { cookies = [] }]
 open Result
 let <span class='pattern-ident' data-type="Belt.Result.t(int, 'a)">a</span> = <span class='ident' data-type="int => Belt.Result.t(int, 'a)">Result.return</span> <span class='int' data-type="int">42</span>
 let <span class='pattern-ident' data-type="Belt.Result.t('a, string)">b</span> = <span class='ident' data-type="string => Belt.Result.t('a, string)">Result.error</span> ((&quot;boom!&quot;)[@reason.raw_literal &quot;boom!&quot;])
@@ -527,7 +528,7 @@ let _ =
 </div></li><li>Composition
 <div class='code-block' data-block-syntax="re">
   
-  <pre class='code' data-block-id='7' id='block-7'><code>let <span class='pattern-ident' data-type="int => int">f</span> = <span class='pattern-ident' data-type="int">x</span> =&gt; <span class='ident' data-type="int">x</span> <span class='operator' data-type="(int, int) => int">+</span> <span class='int' data-type="int">1</span>;
+  <pre class='code' data-block-id='10' id='block-10'><code>let <span class='pattern-ident' data-type="int => int">f</span> = <span class='pattern-ident' data-type="int">x</span> =&gt; <span class='ident' data-type="int">x</span> <span class='operator' data-type="(int, int) => int">+</span> <span class='int' data-type="int">1</span>;
 let <span class='pattern-ident' data-type="int => int">g</span> = <span class='pattern-ident' data-type="int">x</span> =&gt; <span class='ident' data-type="int">x</span> <span class='operator' data-type="(int, int) => int">+</span> <span class='int' data-type="int">2</span>;
 let <span class='pattern-ident' data-type="int => int">h</span> = <span class='pattern-ident' data-type="int">x</span> =&gt; <span class='ident' data-type="int">x</span> <span class='operator' data-type="(int, int) => int">+</span> <span class='int' data-type="int">3</span>;
 let <span class='pattern-ident' data-type="int => int">i</span> = <span class='pattern-ident' data-type="int">x</span> =&gt; <span class='ident' data-type="int">x</span> <span class='operator' data-type="(int, int) => int">+</span> <span class='int' data-type="int">4</span>;
@@ -567,7 +568,7 @@ let <span class='pattern-ident' data-type="Belt.Result.t(int, int)">err2</span> 
   
 </div><div class='code-block' data-block-syntax="ml">
   
-  <pre class='code' data-block-id='7-alt' id='block-7-alt'><code>[@@@ocaml.ppx.context { cookies = [] }]
+  <pre class='code' data-block-id='10-alt' id='block-10-alt'><code>[@@@ocaml.ppx.context { cookies = [] }]
 open Result
 let <span class='pattern-ident' data-type="int => int">f</span> <span class='pattern-ident' data-type="int">x</span> = <span class='ident' data-type="int">x</span> <span class='operator' data-type="(int, int) => int">+</span> <span class='int' data-type="int">1</span>
 let <span class='pattern-ident' data-type="int => int">g</span> <span class='pattern-ident' data-type="int">x</span> = <span class='ident' data-type="int">x</span> <span class='operator' data-type="(int, int) => int">+</span> <span class='int' data-type="int">2</span>
@@ -665,8 +666,10 @@ respectively.</p>
 
 <div class='doc-item'><h4 class='item'>let <a href="#value-swap" id="value-swap">swap</a>: Belt.Result.t('a, 'b) => Belt.Result.t('b, 'a)</h4>
 
-<div class='body body-empty'></div></div><p style='font-style:italic'>other items defined</p><div class='doc-item'><h4 class='item module'>module <a href="#module-Promise" id="module-Promise">Promise</a></h4><div class='body module-body'><p><span class='missing'>This module does not have a toplevel documentation block.</span></p>
-<div class='doc-item'><h4 class='item'>let <a href="#value-Promise.return" id="value-Promise.return">return</a>: 'a => Js.Promise.t(Belt.Result.t('a, 'b))</h4>
+<div class='body body-empty'></div></div><p style='font-style:italic'>other items defined</p><div class='doc-item'><h4 class='item module'>module <a href="#module-Promise" id="module-Promise">Promise</a></h4><div class='body module-body'><a href="#Result.Promise" id="Result.Promise"><h1>Result.Promise</h1></a>
+
+<p>Integration with the <a href='https://bucklescript.github.io/bucklescript/api/Js.Promise.html'>Js.Promise</a> module.</p>
+<p style='font-style:italic'>other items defined</p><div class='doc-item'><h4 class='item'>let <a href="#value-Promise.return" id="value-Promise.return">return</a>: 'a => Js.Promise.t(Belt.Result.t('a, 'b))</h4>
 
 <div class='body body-empty'></div></div>
 
@@ -750,8 +753,7 @@ respectively.</p>
   Js.Promise.t(Belt.Result.t('a, exn))
 ) => Js.Promise.t('b)</h4>
 
-<div class='body body-empty'></div></div>
-</div></div>
+<div class='body body-empty'></div></div></div></div>
     </div>
     <div class='right-blank'></div>
     </div>
