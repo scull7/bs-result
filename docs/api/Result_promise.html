@@ -1,0 +1,140 @@
+
+    
+<!doctype html>
+<meta charset=utf8>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel=stylesheet href='../styles.css'>
+<script defer src='../script.js'></script>
+<title>Result_promise</title>
+<body>
+<script>window.relativeToRoot=".."</script>
+<script defer src="../block-script.js"></script>
+<div id='error-message'>
+  ⚠️ Oops! This page doesn't appear to define a <span>type</span> called <code>_</code>.
+</div>
+
+    <script>window.shouldCheckHashes=true</script>
+    <div class='container'>
+    
+    <div class='sidebar-wrapper'>
+    <div class='sidebar-expander'>Show navigation</div>
+    <div class='sidebar'>
+      <a href="../search.html" style="display: block; padding: 0 8px;">Search</a>
+      
+      <div class='docs-listing'><a href="../index.html">Home</a></div>
+      <div class='toc-header'>Page Contents</div>
+      <div class='table-of-contents'>
+      <a href="#Result.Promise" class='level-1 header'>Result.Promise</a>
+<a href="#value-return" class='level-2 value'>return</a>
+<a href="#value-error" class='level-2 value'>error</a>
+<a href="#value-isOk" class='level-2 value'>isOk</a>
+<a href="#value-isError" class='level-2 value'>isError</a>
+<a href="#value-ap" class='level-2 value'>ap</a>
+<a href="#value-map" class='level-2 value'>map</a>
+<a href="#value-fold" class='level-2 value'>fold</a>
+<a href="#value-bimap" class='level-2 value'>bimap</a>
+<a href="#value-andThen" class='level-2 value'>andThen</a>
+<a href="#value-flatMap" class='level-2 value'>flatMap</a>
+<a href="#value-unsafeResolve" class='level-2 value'>unsafeResolve</a>
+<a href="#value-unsafeMapResolve" class='level-2 value'>unsafeMapResolve</a>
+<a href="#value-unsafeFlatMapResolve" class='level-2 value'>unsafeFlatMapResolve</a>
+      </div>
+      <div class='project-title'>Package modules</div><div class='project-listing'><a href="Result.html">Result</a>
+<a href="Result_promise.html">Result_promise</a></div>
+    </div>
+    </div>
+  
+    <div class='main'>
+    
+    <a href="#Result.Promise" id="Result.Promise"><h1>Result.Promise</h1></a>
+
+<p>Integration with the <a href='https://bucklescript.github.io/bucklescript/api/Js.Promise.html'>Js.Promise</a> module.</p>
+<p style='font-style:italic'>other items defined</p><div class='doc-item'><h4 class='item'>let <a href="#value-return" id="value-return">return</a>: 'a => Js.Promise.t(Belt.Result.t('a, 'b))</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-error" id="value-error">error</a>: 'a => Js.Promise.t(Belt.Result.t('b, 'a))</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-isOk" id="value-isOk">isOk</a>: Js.Promise.t(
+  Belt.Result.t('a, 'b)
+) => Js.Promise.t(bool)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-isError" id="value-isError">isError</a>: Js.Promise.t(
+  Belt.Result.t('a, 'b)
+) => Js.Promise.t(bool)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-ap" id="value-ap">ap</a>: (
+  Js.Promise.t(Belt.Result.t('a, 'b)),
+  Js.Promise.t(
+    Belt.Result.t('a => 'c, 'b)
+  )
+) => Js.Promise.t(Belt.Result.t('c, 'b))</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-map" id="value-map">map</a>: (
+  'a => 'b,
+  Js.Promise.t(Belt.Result.t('a, 'c))
+) => Js.Promise.t(Belt.Result.t('b, 'c))</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-fold" id="value-fold">fold</a>: (
+  'a => Js.Promise.t('c),
+  'b => Js.Promise.t('c),
+  Js.Promise.t(Belt.Result.t('a, 'b))
+) => Js.Promise.t('c)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-bimap" id="value-bimap">bimap</a>: (
+  'a => 'c,
+  'b => 'd,
+  Js.Promise.t(Belt.Result.t('a, 'b))
+) => Js.Promise.t(Belt.Result.t('c, 'd))</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-andThen" id="value-andThen">andThen</a>: (
+  'a => Js.Promise.t(Belt.Result.t('b, 'c)),
+  Js.Promise.t(Belt.Result.t('a, 'c))
+) => Js.Promise.t(Belt.Result.t('b, 'c))</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-flatMap" id="value-flatMap">flatMap</a>: (
+  'a => Belt.Result.t('b, 'c),
+  Js.Promise.t(Belt.Result.t('a, 'c))
+) => Js.Promise.t(Belt.Result.t('b, 'c))</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-unsafeResolve" id="value-unsafeResolve">unsafeResolve</a>: Js.Promise.t(
+  Belt.Result.t('a, exn)
+) => Js.Promise.t('a)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-unsafeMapResolve" id="value-unsafeMapResolve">unsafeMapResolve</a>: (
+  'a => 'b,
+  Js.Promise.t(Belt.Result.t('a, exn))
+) => Js.Promise.t('b)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-unsafeFlatMapResolve" id="value-unsafeFlatMapResolve">unsafeFlatMapResolve</a>: (
+  'a => Belt.Result.t('b, exn),
+  Js.Promise.t(Belt.Result.t('a, exn))
+) => Js.Promise.t('b)</h4>
+
+<div class='body body-empty'></div></div>
+    </div>
+    <div class='right-blank'></div>
+    </div>
+  

@@ -54,23 +54,11 @@
 <a href="#value-unsafeGet" class='level-3 value'>unsafeGet</a>
 <a href="#Other" class='level-2 header'>Other</a>
 <a href="#value-swap" class='level-3 value'>swap</a>
+<a href="#Promise" class='level-2 header'>Promise</a>
 <a href="#module-Promise" class='level-3 module'>Promise</a>
-<a href="#Result.Promise" class='level-5 header'>Result.Promise</a>
-<a href="#value-Promise.return" class='level-6 value'>return</a>
-<a href="#value-Promise.error" class='level-6 value'>error</a>
-<a href="#value-Promise.isOk" class='level-6 value'>isOk</a>
-<a href="#value-Promise.isError" class='level-6 value'>isError</a>
-<a href="#value-Promise.ap" class='level-6 value'>ap</a>
-<a href="#value-Promise.map" class='level-6 value'>map</a>
-<a href="#value-Promise.fold" class='level-6 value'>fold</a>
-<a href="#value-Promise.bimap" class='level-6 value'>bimap</a>
-<a href="#value-Promise.andThen" class='level-6 value'>andThen</a>
-<a href="#value-Promise.flatMap" class='level-6 value'>flatMap</a>
-<a href="#value-Promise.unsafeResolve" class='level-6 value'>unsafeResolve</a>
-<a href="#value-Promise.unsafeMapResolve" class='level-6 value'>unsafeMapResolve</a>
-<a href="#value-Promise.unsafeFlatMapResolve" class='level-6 value'>unsafeFlatMapResolve</a>
       </div>
-      <div class='project-title'>Package modules</div><div class='project-listing'><a href="Result.html">Result</a></div>
+      <div class='project-title'>Package modules</div><div class='project-listing'><a href="Result.html">Result</a>
+<a href="Result_promise.html">Result_promise</a></div>
     </div>
     </div>
   
@@ -666,94 +654,10 @@ respectively.</p>
 
 <div class='doc-item'><h4 class='item'>let <a href="#value-swap" id="value-swap">swap</a>: Belt.Result.t('a, 'b) => Belt.Result.t('b, 'a)</h4>
 
-<div class='body body-empty'></div></div><p style='font-style:italic'>other items defined</p><div class='doc-item'><h4 class='item module'>module <a href="#module-Promise" id="module-Promise">Promise</a></h4><div class='body module-body'><a href="#Result.Promise" id="Result.Promise"><h1>Result.Promise</h1></a>
+<div class='body body-empty'></div></div><a href="#Promise" id="Promise"><h2>Promise</h2></a>
 
-<p>Integration with the <a href='https://bucklescript.github.io/bucklescript/api/Js.Promise.html'>Js.Promise</a> module.</p>
-<p style='font-style:italic'>other items defined</p><div class='doc-item'><h4 class='item'>let <a href="#value-Promise.return" id="value-Promise.return">return</a>: 'a => Js.Promise.t(Belt.Result.t('a, 'b))</h4>
-
-<div class='body body-empty'></div></div>
-
-<div class='doc-item'><h4 class='item'>let <a href="#value-Promise.error" id="value-Promise.error">error</a>: 'a => Js.Promise.t(Belt.Result.t('b, 'a))</h4>
-
-<div class='body body-empty'></div></div>
-
-<div class='doc-item'><h4 class='item'>let <a href="#value-Promise.isOk" id="value-Promise.isOk">isOk</a>: Js.Promise.t(
-  Belt.Result.t('a, 'b)
-) => Js.Promise.t(bool)</h4>
-
-<div class='body body-empty'></div></div>
-
-<div class='doc-item'><h4 class='item'>let <a href="#value-Promise.isError" id="value-Promise.isError">isError</a>: Js.Promise.t(
-  Belt.Result.t('a, 'b)
-) => Js.Promise.t(bool)</h4>
-
-<div class='body body-empty'></div></div>
-
-<div class='doc-item'><h4 class='item'>let <a href="#value-Promise.ap" id="value-Promise.ap">ap</a>: (
-  Js.Promise.t(Belt.Result.t('a, 'b)),
-  Js.Promise.t(
-    Belt.Result.t('a => 'c, 'b)
-  )
-) => Js.Promise.t(Belt.Result.t('c, 'b))</h4>
-
-<div class='body body-empty'></div></div>
-
-<div class='doc-item'><h4 class='item'>let <a href="#value-Promise.map" id="value-Promise.map">map</a>: (
-  'a => 'b,
-  Js.Promise.t(Belt.Result.t('a, 'c))
-) => Js.Promise.t(Belt.Result.t('b, 'c))</h4>
-
-<div class='body body-empty'></div></div>
-
-<div class='doc-item'><h4 class='item'>let <a href="#value-Promise.fold" id="value-Promise.fold">fold</a>: (
-  'a => Js.Promise.t('c),
-  'b => Js.Promise.t('c),
-  Js.Promise.t(Belt.Result.t('a, 'b))
-) => Js.Promise.t('c)</h4>
-
-<div class='body body-empty'></div></div>
-
-<div class='doc-item'><h4 class='item'>let <a href="#value-Promise.bimap" id="value-Promise.bimap">bimap</a>: (
-  'a => 'c,
-  'b => 'd,
-  Js.Promise.t(Belt.Result.t('a, 'b))
-) => Js.Promise.t(Belt.Result.t('c, 'd))</h4>
-
-<div class='body body-empty'></div></div>
-
-<div class='doc-item'><h4 class='item'>let <a href="#value-Promise.andThen" id="value-Promise.andThen">andThen</a>: (
-  'a => Js.Promise.t(Belt.Result.t('b, 'c)),
-  Js.Promise.t(Belt.Result.t('a, 'c))
-) => Js.Promise.t(Belt.Result.t('b, 'c))</h4>
-
-<div class='body body-empty'></div></div>
-
-<div class='doc-item'><h4 class='item'>let <a href="#value-Promise.flatMap" id="value-Promise.flatMap">flatMap</a>: (
-  'a => Belt.Result.t('b, 'c),
-  Js.Promise.t(Belt.Result.t('a, 'c))
-) => Js.Promise.t(Belt.Result.t('b, 'c))</h4>
-
-<div class='body body-empty'></div></div>
-
-<div class='doc-item'><h4 class='item'>let <a href="#value-Promise.unsafeResolve" id="value-Promise.unsafeResolve">unsafeResolve</a>: Js.Promise.t(
-  Belt.Result.t('a, exn)
-) => Js.Promise.t('a)</h4>
-
-<div class='body body-empty'></div></div>
-
-<div class='doc-item'><h4 class='item'>let <a href="#value-Promise.unsafeMapResolve" id="value-Promise.unsafeMapResolve">unsafeMapResolve</a>: (
-  'a => 'b,
-  Js.Promise.t(Belt.Result.t('a, exn))
-) => Js.Promise.t('b)</h4>
-
-<div class='body body-empty'></div></div>
-
-<div class='doc-item'><h4 class='item'>let <a href="#value-Promise.unsafeFlatMapResolve" id="value-Promise.unsafeFlatMapResolve">unsafeFlatMapResolve</a>: (
-  'a => Belt.Result.t('b, exn),
-  Js.Promise.t(Belt.Result.t('a, exn))
-) => Js.Promise.t('b)</h4>
-
-<div class='body body-empty'></div></div></div></div>
+<p>@doc</p>
+<p style='font-style:italic'>other items defined</p><div class='doc-item'><h4 class='item module'>module <a href="#module-Promise" id="module-Promise">Promise</a> : <a href="Result_promise.html">Result_promise</a></h4></div>
     </div>
     <div class='right-blank'></div>
     </div>
