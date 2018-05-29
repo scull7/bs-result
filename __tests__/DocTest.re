@@ -1,6 +1,6 @@
 open Jest;
 
-describe("Documentatino example tests", () =>
+describe("Documentation example tests", () =>
   describe("Usage", () => {
     test("Generate a new result.", () => {
       let actual =
