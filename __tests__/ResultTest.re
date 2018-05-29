@@ -512,6 +512,15 @@ describe("Result.Promise based utilities", () => {
          |> Js.Promise.resolve
        )
   );
+  testPromise("flatMap - Error", () =>
+    Result.Promise.error("boom")
+    |> Result.Promise.flatMap(x => Result.return(x + 1))
+    |> Js.Promise.then_(actual =>
+         Expect.expect(actual)
+         |> Expect.toEqual(Result.error("boom"))
+         |> Js.Promise.resolve
+       )
+  );
   testPromise("unsafeResolve - Ok", () =>
     Result.Promise.return(42)
     |> Js.Promise.then_(result =>
@@ -520,6 +529,19 @@ describe("Result.Promise based utilities", () => {
     |> Js.Promise.then_(actual =>
          Expect.expect(actual)
          |> Expect.toEqual(Result.return(42))
+         |> Js.Promise.resolve
+       )
+  );
+  testPromise("unsafeResolve - Error", () =>
+    Result.Promise.error(UnsafeGetFailure("boom"))
+    |> Result.Promise.unsafeResolve
+    |> Js.Promise.then_(_ =>
+         fail("should not be possible") |> Js.Promise.resolve
+       )
+    |> Js.Promise.catch(error =>
+         Js.String.make(error)
+         |> Expect.expect
+         |> Expect.toEqual("ResultTest.UnsafeGetFailure,4,boom")
          |> Js.Promise.resolve
        )
   );

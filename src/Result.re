@@ -1,5 +1,7 @@
 open Belt.Result;
 
+module Promise = Result_promise;
+
 let return = x => Ok(x);
 
 let error = x => Error(x);
@@ -99,44 +101,3 @@ let unsafeGet =
   fun
   | Error(bad) => raise(bad)
   | Ok(good) => good;
-
-module Promise = {
-  let return = x => return(x) |> Js.Promise.resolve;
-  let error = x => error(x) |> Js.Promise.resolve;
-  let isOk = promise =>
-    promise |> Js.Promise.then_(x => isOk(x) |> Js.Promise.resolve);
-  let isError = promise =>
-    promise |> Js.Promise.then_(x => isError(x) |> Js.Promise.resolve);
-  let ap = (pResult, pfResult) =>
-    Js.Promise.all2((pResult, pfResult))
-    |> Js.Promise.then_(((result, fResult)) =>
-         ap(result, fResult) |> Js.Promise.resolve
-       );
-  let map = (fn, promise) =>
-    promise
-    |> Js.Promise.then_(result => map(fn, result) |> Js.Promise.resolve);
-  let fold = (error, ok, promise) =>
-    promise |> Js.Promise.then_(fold(error, ok));
-  let bimap = (fnError, fnOk, promise) =>
-    promise
-    |> Js.Promise.then_(result =>
-         bimap(fnError, fnOk, result) |> Js.Promise.resolve
-       );
-  let andThen = (fn, promise) =>
-    promise
-    |> Js.Promise.then_(
-         fun
-         | Error(e) => Error(e) |> Js.Promise.resolve
-         | Ok(v) => fn(v),
-       );
-  let flatMap = (fn, promise) =>
-    promise
-    |> Js.Promise.then_(result => flatMap(fn, result) |> Js.Promise.resolve);
-  let unsafeResolve = promise =>
-    promise
-    |> Js.Promise.then_(result => result |> unsafeGet |> Js.Promise.resolve);
-  let unsafeMapResolve = (fn, promise) =>
-    promise |> map(fn) |> unsafeResolve;
-  let unsafeFlatMapResolve = (fn, promise) =>
-    promise |> flatMap(fn) |> unsafeResolve;
-};
