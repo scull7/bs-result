@@ -1,37 +1,34 @@
 {
-  "name": "bs-result",
-  "version": "2.2.0",
-  "description": "A Result type implementation for ReasonML",
-  "scripts": {
-    "build": "bsb -make-world",
-    "clean": "bsb -clean-world",
-    "coverage": "nyc report --temp-directory=coverage --reporter=text-lcov | coveralls",
-    "format": "bsrefmt --in-place src/*.re* __tests__/*.re*",
-    "install:peers": "yarn add $(jq -r '.peerDependencies|keys|join(\" \")' package.json)",
-    "precommit": "lint-staged",
-    "test": "yarn run clean; yarn run build; jest --coverage && yarn run coverage",
-    "watch:jest": "jest --coverage --watchAll",
-    "watch:build": "npm run format && bsb -make-world -w"
-  },
-  "lint-staged": {
-    "*.{re,rei}": [
-      "yarn format",
-      "git add"
-    ]
-  },
-  "main": "Result.bs.js",
-  "repository": "git@github.com:scull7/bs-result.git",
-  "author": "Nathan Sculli <scull7@gmail.com>",
-  "license": "MIT",
-  "devDependencies": {
-    "@glennsl/bs-jest": "^0.4.2",
-    "bs-platform": "^3.1.4",
-    "coveralls": "^3.0.1",
-    "husky": "^0.14.3",
-    "lint-staged": "^7.1.0",
-    "nyc": "^11.8.0"
-  },
-  "peerDependencies": {
-    "bs-platform": "^3.1.4"
-  }
+	"name": "bs-result",
+	"version": "2.2.0",
+	"description": "A Result type implementation for ReasonML",
+	"scripts": {
+		"build": "bsb -make-world",
+		"clean": "bsb -clean-world",
+		"coverage": "nyc report --temp-directory=coverage --reporter=text-lcov | coveralls",
+		"format": "bsrefmt --in-place src/*.re* __tests__/*.re*",
+		"install:peers": "yarn add $(jq -r '.peerDependencies|keys|join(\" \")' package.json)",
+		"precommit": "lint-staged",
+		"test": "yarn run clean; yarn run build; jest --coverage && yarn run coverage",
+		"watch:jest": "jest --coverage --watchAll",
+		"watch:build": "npm run format && bsb -make-world -w"
+	},
+	"lint-staged": {
+		"*.{re,rei}": [ "yarn format", "git add" ]
+	},
+	"main": "Result.bs.js",
+	"repository": "git@github.com:scull7/bs-result.git",
+	"author": "Nathan Sculli <scull7@gmail.com>",
+	"license": "MIT",
+	"devDependencies": {
+		"@glennsl/bs-jest": "^0.5.1",
+		"bs-platform": "^7.3.1",
+		"coveralls": "^3.0.13",
+		"husky": "^4.2.5",
+		"lint-staged": "^10.1.7",
+		"nyc": "^15.0.1"
+	},
+	"peerDependencies": {
+		"bs-platform": "^7.2.2"
+	}
 }
