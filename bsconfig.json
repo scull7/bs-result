@@ -1,6 +1,6 @@
 {
     "name": "bs-result",
-    "version": "2.2.0",
+    "version": "2.3.0",
     "package-specs": {
         "module": "commonjs",
         "in-source": true
@@ -15,6 +15,5 @@
     ],
     "bs-dev-dependencies": [ "@glennsl/bs-jest" ],
     "bs-dependencies": [],
-    "bsc-flags": [ "-bs-super-errors", "-bs-sort-imports" ],
     "refmt": 3
 }
